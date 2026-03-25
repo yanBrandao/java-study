@@ -1614,3 +1614,128 @@
 5. Como fazer projeções (Projections) no Spring Data JPA?
 6. O que é o `Specification` e quando usar?
 7. Como fazer auditoria de entidades com `@CreatedDate`, `@LastModifiedDate`?
+
+---
+
+# Perguntas sobre SQL e Bancos de Dados Relacionais
+
+## 19. Fundamentos de SQL
+
+1. Qual a diferença entre `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN` e `FULL OUTER JOIN`?
+2. Qual a diferença entre `WHERE` e `HAVING`?
+3. O que são funções de agregação (`COUNT`, `SUM`, `AVG`, `MIN`, `MAX`) e como usá-las com `GROUP BY`?
+4. Qual a diferença entre `UNION` e `UNION ALL`?
+5. O que são subqueries (subconsultas) e quando usá-las?
+6. Qual a diferença entre `DELETE`, `TRUNCATE` e `DROP`?
+7. O que é uma transação SQL e o que significam as propriedades ACID?
+8. Qual a diferença entre `IN`, `EXISTS` e `JOIN` para filtrar dados? Quando usar cada um?
+9. O que são índices (indexes) e como eles melhoram a performance de consultas?
+10. Qual a diferença entre índice clusterizado (clustered) e não clusterizado (non-clustered)?
+
+## 20. Modelagem e RDBMS
+
+1. O que são chaves primárias (Primary Key) e chaves estrangeiras (Foreign Key)?
+2. O que é normalização de dados? Explique as três primeiras formas normais (1NF, 2NF, 3NF).
+3. Quando faz sentido desnormalizar um banco de dados?
+4. Qual a diferença entre `CHAR`, `VARCHAR` e `TEXT`?
+5. O que são constraints (`NOT NULL`, `UNIQUE`, `CHECK`, `DEFAULT`, `FOREIGN KEY`)?
+6. O que são stored procedures e functions? Quais as diferenças?
+7. O que são triggers e quando usá-los?
+8. O que são views e materialized views? Qual a diferença?
+9. Quais as principais diferenças entre PostgreSQL, Oracle e SQL Server?
+10. O que é um plano de execução (execution plan) e como usá-lo para otimizar queries?
+
+---
+
+# Perguntas sobre Maven
+
+## 21. Maven
+
+1. O que é o Maven e qual problema ele resolve no desenvolvimento Java?
+2. O que é o arquivo `pom.xml` e quais são seus elementos principais?
+3. O que é o ciclo de vida do Maven (`clean`, `default`, `site`) e quais são as fases principais?
+4. Qual a diferença entre `mvn compile`, `mvn package`, `mvn install` e `mvn deploy`?
+5. O que são dependências no Maven e como funciona o gerenciamento de dependências transitivas?
+6. Qual a diferença entre `<dependencies>` e `<dependencyManagement>`?
+7. O que é o escopo (scope) de uma dependência (`compile`, `test`, `provided`, `runtime`)?
+8. O que são plugins no Maven e como configurá-los?
+9. O que é um repositório local, remoto e central no Maven?
+10. O que são profiles no Maven e quando usá-los?
+11. Qual a diferença entre `mvn clean install` e `mvn clean install -DskipTests`?
+12. O que é um archetype no Maven?
+13. Como resolver conflitos de dependências no Maven?
+14. Qual a diferença entre Maven e Gradle?
+
+---
+
+# Perguntas sobre GIT
+
+## 22. GIT
+
+1. Qual a diferença entre `git merge` e `git rebase`? Quando usar cada um?
+2. O que é o staging area (index) no Git e como funciona o fluxo `add` -> `commit` -> `push`?
+3. Como resolver um conflito de merge no Git?
+4. Qual a diferença entre `git pull` e `git fetch`?
+5. O que é o `git stash` e quando usá-lo?
+6. O que são branches e qual a importância de uma estratégia de branching (Git Flow, GitHub Flow, Trunk-Based)?
+7. Qual a diferença entre `git reset`, `git revert` e `git checkout`?
+8. O que é um `cherry-pick` e quando usá-lo?
+9. Qual a diferença entre `git reset --soft`, `--mixed` e `--hard`?
+10. O que é o `.gitignore` e como configurá-lo corretamente?
+11. O que são tags no Git e para que servem?
+12. O que é `git bisect` e como usá-lo para encontrar bugs?
+13. Como funciona o `git squash` e quando é útil?
+14. O que são Git hooks e como usá-los?
+
+---
+
+# Perguntas sobre Troubleshooting e Bug Fixing
+
+## 23. Troubleshooting e Debug
+
+1. Quais são os passos que você segue para investigar e resolver um bug em produção?
+2. Como usar o debugger da IDE (breakpoints, step over, step into, watch) para investigar um problema?
+3. O que é stack trace em Java e como interpretá-lo para encontrar a causa raiz de uma exceção?
+4. Quais são as exceções mais comuns em Java (`NullPointerException`, `ClassCastException`, `StackOverflowError`, `OutOfMemoryError`) e como diagnosticá-las?
+5. Como analisar logs de uma aplicação para identificar problemas? Qual a importância de níveis de log (`DEBUG`, `INFO`, `WARN`, `ERROR`)?
+6. O que é um memory leak em Java e como identificá-lo?
+7. O que é um deadlock e como diagnosticá-lo em uma aplicação Java?
+8. Quais ferramentas de profiling e monitoramento você conhece (VisualVM, JConsole, JProfiler, Actuator)?
+9. Como investigar problemas de performance em uma API REST (latência alta, timeout)?
+10. O que são thread dumps e heap dumps e quando usá-los?
+11. Como debugar um problema que só acontece em um ambiente específico (staging/produção) mas não localmente?
+
+---
+
+# Perguntas sobre Code Review e Otimização
+
+## 24. Code Review e Boas Práticas
+
+1. O que você considera mais importante ao fazer um code review?
+2. O que são code smells? Cite exemplos comuns.
+3. O que são os princípios SOLID e como eles se aplicam na prática?
+4. O que é o princípio DRY (Don't Repeat Yourself) e quando ele pode ser aplicado em excesso?
+5. Qual a diferença entre complexidade ciclomática alta e código limpo? Como reduzir a complexidade?
+6. Quais padrões de projeto (Design Patterns) você mais utiliza no dia a dia? Dê exemplos práticos.
+7. O que é refatoração e quais técnicas de refatoração você conhece (extract method, rename, move, etc.)?
+8. Como identificar e otimizar queries N+1 em uma aplicação Spring/JPA?
+9. Quais práticas você segue para escrever código testável?
+10. O que é análise estática de código e quais ferramentas você conhece (SonarQube, Checkstyle, PMD)?
+11. Como avaliar se uma dependência externa deve ser adicionada ao projeto?
+
+---
+
+# Perguntas sobre Documentação Técnica
+
+## 25. Documentação Técnica
+
+1. Qual a importância de documentação técnica em um projeto de software?
+2. O que é Javadoc e como usá-lo para documentar classes e métodos?
+3. Quando usar comentários no código e quando o código deve ser autoexplicativo?
+4. O que deve conter um bom README de projeto?
+5. Como documentar uma API REST? Qual a diferença entre Swagger/OpenAPI e documentação manual?
+6. O que é um ADR (Architecture Decision Record) e quando usá-lo?
+7. Como documentar processos de deploy e configuração de ambiente?
+8. O que deve conter uma boa mensagem de commit?
+9. Como escrever documentação de troubleshooting/runbook para a equipe de operações?
+10. Qual a diferença entre documentação técnica (para desenvolvedores) e documentação funcional (para stakeholders)?
