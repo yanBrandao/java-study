@@ -3,29 +3,21 @@
 ## 1. Fundamentos da Linguagem Java
 
 1. Qual a diferença entre JDK, JRE e JVM?
-    R: JDK é o Java Development Kit e ali tem todas as ferramentas necessárias para desenvolver aplicações java, Java Runtime é o executavel do Java para rodar aplicações java. JVM é o Java Virtual Machine, com ele nós podemos executar as aplicações java em qualquer sistema operacional.
-
-    **[Parcial]** A ideia geral está certa, mas faltou mostrar a relação entre eles. Pense como camadas:
-    - **JVM** (Java Virtual Machine): é a máquina virtual que executa o bytecode Java. É ela que garante o "write once, run anywhere", pois cada sistema operacional tem sua própria implementação de JVM.
+    R: **JVM** (Java Virtual Machine): é a máquina virtual que executa o bytecode Java. É ela que garante o "write once, run anywhere", pois cada sistema operacional tem sua própria implementação de JVM.
     - **JRE** (Java Runtime Environment): contém a JVM + as bibliotecas padrão do Java (java.lang, java.util, etc.). É o suficiente para **executar** programas Java.
     - **JDK** (Java Development Kit): contém o JRE + ferramentas de desenvolvimento como o compilador (`javac`), debugger (`jdb`), e o empacotador (`jar`). É necessário para **desenvolver** programas Java.
 
     Resumo: JDK > JRE > JVM (cada um contém o anterior).
 
 2. O que é o bytecode Java e por que ele é importante?
-    R: Pelo código do Java ser naturalmente verboso, o bytecode faz com que o código java seja compilado e compactado.
-
-    **[Incorreto]** Bytecode não tem relação com a verbosidade do Java nem com compactação. Bytecode é o **código intermediário** gerado pelo compilador `javac` quando compila um arquivo `.java` em um arquivo `.class`. Ele é importante porque:
+    R: Bytecode é o **código intermediário** gerado pelo compilador `javac` quando compila um arquivo `.java` em um arquivo `.class`. Ele é importante porque:
     - A JVM interpreta o bytecode, não o código-fonte. Isso permite que o mesmo `.class` rode em qualquer sistema operacional que tenha uma JVM instalada (portabilidade).
     - O bytecode é otimizado em tempo de execução pelo **JIT (Just-In-Time Compiler)**, que converte partes frequentemente usadas em código de máquina nativo para melhor performance.
 
     Fluxo: `Código.java` -> (javac) -> `Código.class` (bytecode) -> (JVM) -> Execução
 
 3. Qual a diferença entre variáveis de tipo primitivo e tipo referência?
-    R: variaveis do tipo primitivo tem tamanho de byte especifico, como int, string, float etc... no Java usa-se muito tipo por referencia, que são herdados da classe pai Object.
-
-    **[Parcial]** A ideia está no caminho certo, mas `String` **não** é um tipo primitivo - é um tipo por referência (é uma classe). As diferenças principais são:
-    - **Primitivos** (`int`, `float`, `boolean`, etc.): armazenam o **valor diretamente** na memória stack. São mais leves e rápidos.
+    R: **Primitivos** (`int`, `float`, `boolean`, etc.): armazenam o **valor diretamente** na memória stack. São mais leves e rápidos.
     - **Referência** (`String`, `Integer`, arrays, qualquer classe): armazenam um **ponteiro/referência** para um objeto que fica na memória heap. Todos herdam de `Object`.
 
     Exemplo prático:
@@ -35,9 +27,7 @@
     ```
 
 4. Quais são os tipos primitivos do Java e seus tamanhos?
-    R: existem muitos mais os mais comuns são int, string, float, long.
-
-    **[Incorreto]** Java tem exatamente **8 tipos primitivos** (não "muitos"), e `String` **não** é um deles:
+    R:  Java tem exatamente **8 tipos primitivos**:
 
     | Tipo      | Tamanho | Faixa de valores                        |
     |-----------|---------|------------------------------------------|
@@ -50,12 +40,8 @@
     | `char`    | 2 bytes | caractere Unicode (0 a 65.535)           |
     | `boolean` | 1 bit*  | `true` ou `false`                        |
 
-    Dica para entrevista: decore esses 8. É uma pergunta clássica e errar `String` como primitivo pega muito mal.
-
 5. Qual a diferença entre `==` e `.equals()`?
-    R: o método equals() além de poder ser sobrescrito, compara os valores dos atributos de um objeto e o `==` compara a referencia.
-
-    **[Parcial]** A essência está correta, mas vale refinar:
+    R: 
     - `==` compara **referências** (endereço de memória) para objetos, e **valores** para primitivos.
     - `.equals()` por padrão (na classe `Object`) faz a mesma coisa que `==`. Porém, classes como `String`, `Integer`, etc. **sobrescrevem** o método para comparar o **conteúdo/valor**.
 
@@ -65,11 +51,10 @@
     a == b;      // false (referências diferentes na heap)
     a.equals(b); // true (conteúdo igual)
     ```
-
     Ponto importante: se você criar sua própria classe e quiser comparar por valor, **precisa sobrescrever** `equals()` e `hashCode()`.
 
 6. O que é autoboxing e unboxing?
-    **[Não respondida]** Autoboxing e unboxing é a conversão automática que o Java faz entre tipos primitivos e suas classes wrapper correspondentes:
+    R: Autoboxing e unboxing é a conversão automática que o Java faz entre tipos primitivos e suas classes wrapper correspondentes:
     - **Autoboxing**: primitivo -> wrapper (automático): `Integer x = 10;` (o `int` 10 vira um objeto `Integer`)
     - **Unboxing**: wrapper -> primitivo (automático): `int y = x;` (o objeto `Integer` vira `int`)
 
@@ -82,9 +67,7 @@
     ```
 
 7. Por que a classe `String` é imutável em Java?
-    R: não sei
-
-    **[Não respondida]** `String` é imutável porque, uma vez criada, seu valor **não pode ser alterado**. Qualquer operação que "modifica" uma String na verdade cria uma **nova String** na memória. Isso foi feito por três razões:
+    R:  `String` é imutável porque, uma vez criada, seu valor **não pode ser alterado**. Qualquer operação que "modifica" uma String na verdade cria uma **nova String** na memória. Isso foi feito por três razões:
     - **Segurança**: Strings são usadas para senhas, URLs, nomes de classe. Se fossem mutáveis, alguém poderia alterar uma referência compartilhada e comprometer o sistema.
     - **Performance (String Pool)**: como são imutáveis, o Java pode reutilizar a mesma instância para Strings iguais, economizando memória.
     - **Thread-safety**: objetos imutáveis são naturalmente seguros para uso entre múltiplas threads sem sincronização.
@@ -96,9 +79,7 @@
     ```
 
 8. Qual a diferença entre `String`, `StringBuilder` e `StringBuffer`?
-    R: String é o objecto que contem um texto, StringBuilder é um padrão de projeto que serve para criar uma String com algumas funções já definidas, o StringBuffer eu não sei.
-
-    **[Incorreto]** `StringBuilder` **não** é um padrão de projeto (você confundiu com o padrão Builder). As três são classes para manipulação de texto:
+    R: 
     - **String**: imutável. Cada modificação cria um novo objeto. Ideal para textos que não mudam.
     - **StringBuilder**: mutável. Modifica o texto no mesmo objeto sem criar novos. **Não** é thread-safe. Ideal para concatenações em loops (melhor performance).
     - **StringBuffer**: idêntico ao StringBuilder, porém **thread-safe** (métodos sincronizados). Mais lento que StringBuilder por causa da sincronização.
@@ -114,11 +95,10 @@
     ```
 
     Regra prática: use `String` para textos fixos, `StringBuilder` para concatenações, `StringBuffer` somente se precisar de thread-safety.
+    //Poderia exemplificar quando deve ser usado `StringBuffer`?
 
 9. O que é o pool de Strings (String Pool)?
-    R: não sei
-
-    **[Não respondida]** O String Pool é uma área especial da memória heap onde o Java armazena **literais de String** para reutilização. Quando você cria uma String com literal (aspas duplas), o Java primeiro verifica se já existe uma igual no pool:
+    R: O String Pool é uma área especial da memória heap onde o Java armazena **literais de String** para reutilização. Quando você cria uma String com literal (aspas duplas), o Java primeiro verifica se já existe uma igual no pool:
 
     ```java
     String a = "Java";   // cria no pool
@@ -133,10 +113,8 @@
     O método `intern()` pode forçar uma String para o pool: `c.intern() == a` seria `true`.
 
 10. Qual a diferença entre `final`, `finally` e `finalize()`?
-    R: final é uma palavra reservada para definir um atributo como final (imutavel). Finally é utilizado no try catch e finalize eu nao sei.
-
-    **[Parcial]** `final` e `finally` estão no caminho certo, mas incompletos:
-    - **`final`**: palavra-chave com três usos:
+    R:
+     - **`final`**: palavra-chave com três usos:
       - Em **variável**: o valor não pode ser reatribuído (constante).
       - Em **método**: o método não pode ser sobrescrito por subclasses.
       - Em **classe**: a classe não pode ser herdada (ex: `String` é `final`).
@@ -144,9 +122,7 @@
     - **`finalize()`**: método da classe `Object` chamado pelo Garbage Collector **antes** de desalocar o objeto da memória. **Deprecated desde o Java 9** - não use em código novo. Foi substituído por `try-with-resources` e `Cleaner`.
 
 11. O que são modificadores de acesso e quais existem em Java?
-    R: São identificadores que definem quem pode acessar o atributo daquele objecto, como por exemplo, private, não pode ser acessado de fora do objeto, para isso é preciso re-implementar o metodo `set` e `get`. existem outros como public, final, static e etc..
-
-    **[Parcial]** A ideia de "quem pode acessar" está correta, mas `final` e `static` **não** são modificadores de acesso - são modificadores de comportamento. Java possui exatamente **4 modificadores de acesso**:
+    R:  Java possui exatamente **4 modificadores de acesso**:
 
     | Modificador   | Classe | Pacote | Subclasse | Mundo |
     |---------------|--------|--------|-----------|-------|
@@ -157,12 +133,8 @@
 
     *default = sem palavra-chave (package-private).
 
-    Dica: decore essa tabela, é muito cobrada em entrevistas.
-
 12. Qual a diferença entre `static` e `non-static`?
-    R: statis é imutavel non-static não é
-
-    **[Incorreto]** Você confundiu `static` com `final`. `static` não tem nada a ver com imutabilidade:
+    R:
     - **`static`**: pertence à **classe**, não à instância. Existe uma única cópia compartilhada por todos os objetos. É acessado sem criar um objeto: `MinhaClasse.metodo()`.
     - **`non-static`** (instância): pertence a **cada objeto** criado. Cada instância tem sua própria cópia.
 
@@ -180,9 +152,7 @@
     ```
 
 13. O que é o `ClassLoader` em Java?
-    R: não sei
-
-    **[Não respondida]** O ClassLoader é o componente da JVM responsável por **carregar as classes em memória** em tempo de execução. Quando você usa uma classe no código, o ClassLoader:
+    R:  O ClassLoader é o componente da JVM responsável por **carregar as classes em memória** em tempo de execução. Quando você usa uma classe no código, o ClassLoader:
     1. Localiza o arquivo `.class` (no classpath, JARs, etc.)
     2. Lê o bytecode
     3. Cria o objeto `Class<?>` na memória
@@ -193,9 +163,7 @@
     - **Application ClassLoader**: carrega as classes da sua aplicação (classpath)
 
 14. Como funciona o Garbage Collector no Java?
-    R: O garbage collector funciona limpar variaveis que são utilizadas em funcões e após o termino da funcão precisam ser desalocadas da memoria. Diferente te linguagem com C, esse processo no Java é automatico e feito pelo Garbage collector.
-
-    **[Parcial]** A comparação com C e o fato de ser automático estão corretos, mas o escopo está limitado demais. O GC não limpa apenas variáveis de funções:
+    R: 
     - O GC remove da memória **heap** qualquer objeto que **não possui mais referências** apontando para ele, independente de onde foi criado.
     - Funciona por gerações: **Young Generation** (objetos novos), **Old Generation** (objetos que sobreviveram várias coletas), e **Metaspace** (metadados de classes).
     - O GC roda automaticamente, mas você pode sugerir (não forçar) uma coleta com `System.gc()`.
@@ -212,7 +180,6 @@
 15. O que é o operador `instanceof`?
     R: é uma palavra reservada que ser para identificar se aquela variavel pertence ao tipo de uma Classe
 
-    **[Correto]** Boa resposta! Para complementar com um exemplo prático:
     ```java
     Animal animal = new Cachorro();
     if (animal instanceof Cachorro) {
@@ -231,10 +198,8 @@
 
 ## 2. Orientação a Objetos (OOP)
 
-1. Quais são os quatro pilares da Orientação a Objetos?
-    R: Não lembro
-
-    **[Não respondida]** Os quatro pilares são:
+16. Quais são os quatro pilares da Orientação a Objetos?
+    R: Os quatro pilares são:
     - **Encapsulamento**: esconder os detalhes internos de uma classe, expondo apenas o necessário através de métodos públicos (getters/setters). Protege o estado interno do objeto.
     - **Herança**: uma classe (filha) pode herdar atributos e métodos de outra classe (pai), promovendo reuso de código. Em Java, usa-se `extends`.
     - **Polimorfismo**: capacidade de um mesmo método se comportar de maneiras diferentes dependendo do objeto que o chama. "Muitas formas".
@@ -242,10 +207,8 @@
 
     Dica para memorizar: **E.H.P.A.** (Encapsulamento, Herança, Polimorfismo, Abstração).
 
-2. Qual a diferença entre abstração e encapsulamento?
-    R: abstração é uma maneira de você abstrair o mundo real para o código, por exemplo uma floresta pode ser representada como um Objeto Floresta e um atributo int arvore. Já o encapsulamento é uma maneira de você encapsular uma classe, para que ela não ser modificada externamente, por exemplo em C você cria um arquivo .h para encapsular seu arquivo .ccp dessa maneira você encapsula o arquivo para que ele não seja exposto externamente.
-
-    **[Parcial]** A ideia central está correta, mas o exemplo de C (.h/.cpp) não é ideal para uma entrevista Java. Vamos refinar:
+17. Qual a diferença entre abstração e encapsulamento?
+    R: 
     - **Abstração**: foca em **o que** o objeto faz, escondendo **como** ele faz. Você define um contrato (interface/classe abstrata) sem expor a implementação.
     - **Encapsulamento**: foca em **proteger os dados** internos de acesso direto, usando modificadores de acesso (`private`) e expondo via métodos controlados (`getters/setters`).
 
@@ -267,10 +230,8 @@
     }
     ```
 
-3. Qual a diferença entre classe abstrata e interface?
-    R: classe abstrata possui atributos e metodos que podem ser extentidos por outras classes assumindo que serão utilizados ou ser necessidade de serem reescritos. já interfaces tem o papel apenas de representar como aquela classe deve ser implementada.
-
-    **[Parcial]** A ideia está no caminho certo, mas faltam diferenças técnicas importantes:
+18. Qual a diferença entre classe abstrata e interface?
+    R:
 
     | Característica        | Classe Abstrata              | Interface                          |
     |-----------------------|------------------------------|------------------------------------|
@@ -282,11 +243,8 @@
 
     Regra prática: use **interface** para definir um contrato ("o que fazer") e **classe abstrata** quando quiser compartilhar código comum entre classes relacionadas ("como fazer parcialmente").
 
-4. Quando usar classe abstrata e quando usar interface?
-    R: Usamos classe abstratas quando queremos reutilizar o mesmo código em classes distintas, como para representar o automovel, podemos ter carro, moto etc.. e todos vão ter métodos já implementados como combustivel, metodo abastecer(), já no caso de interface, podemos seguir o mesmo exemplo, mas por exemplo para trocar_marcha(), na moto é feito de uma maneira diferente do carro.
-
-    **[Parcial]** O exemplo do automóvel é bom, mas a conclusão sobre interface ficou confusa. O exemplo de `trocar_marcha()` com comportamento diferente é na verdade **polimorfismo com classe abstrata** (método abstrato). Vamos clarificar:
-
+19. Quando usar classe abstrata e quando usar interface?
+    R: 
     - **Classe abstrata**: quando as classes filhas **compartilham código e estado** (atributos). Ex: `Veiculo` com atributo `combustivel` e método `abastecer()` que é igual para todos.
     - **Interface**: quando classes **não relacionadas** precisam do mesmo comportamento. Ex: tanto `Carro` quanto `Liquidificador` podem ser `Ligavel` (ter `ligar()` e `desligar()`), mas não faz sentido herdar de uma mesma classe.
 
@@ -304,10 +262,8 @@
     class Carro extends Veiculo implements Rastreavel { ... }
     ```
 
-5. O que é polimorfismo? Dê exemplos de polimorfismo em tempo de compilação e em tempo de execução.
-    R:
-
-    **[Não respondida]** Polimorfismo significa "muitas formas" - a capacidade de um mesmo método ou referência assumir diferentes comportamentos:
+20. O que é polimorfismo? Dê exemplos de polimorfismo em tempo de compilação e em tempo de execução.
+    R: Polimorfismo significa "muitas formas" - a capacidade de um mesmo método ou referência assumir diferentes comportamentos:
 
     - **Tempo de compilação (estático) = Sobrecarga (Overloading)**: mesmo nome de método, parâmetros diferentes. O compilador decide qual chamar.
     ```java
@@ -327,11 +283,8 @@
     a.falar(); // "Au au!" - decidido em tempo de execução
     ```
 
-6. Qual a diferença entre sobrecarga (overloading) e sobrescrita (overriding)?
-    R: sobrecarga é escrevermos o mesmo método com adição de mais parametros, no caso de sobrescrita, não estamos reescrevendo o mesmo método e mesmo parametros, para com um comportamento distinto.
-
-    **[Parcial]** A sobrecarga está correta. A sobrescrita ficou confusa na redação - na verdade, sobrescrita **é** reescrever o mesmo método com os mesmos parâmetros:
-
+21. Qual a diferença entre sobrecarga (overloading) e sobrescrita (overriding)?
+    R:
     - **Sobrecarga (Overloading)**: mesmo nome, **parâmetros diferentes** (quantidade ou tipo). Ocorre na **mesma classe** ou entre pai e filho. Resolvido em compilação.
     - **Sobrescrita (Overriding)**: mesmo nome, **mesmos parâmetros**, em uma **classe filha** que redefine o comportamento do pai. Resolvido em execução. Usa-se `@Override`.
 
@@ -348,10 +301,8 @@
     }
     ```
 
-7. O que é herança e quais são seus tipos em Java?
-    R: Não lembro
-
-    **[Não respondida]** Herança é o mecanismo onde uma classe (filha/subclasse) **herda** atributos e métodos de outra classe (pai/superclasse), promovendo reuso de código. Usa-se a palavra `extends`.
+22. O que é herança e quais são seus tipos em Java?
+    R: Herança é o mecanismo onde uma classe (filha/subclasse) **herda** atributos e métodos de outra classe (pai/superclasse), promovendo reuso de código. Usa-se a palavra `extends`.
 
     Tipos de herança em Java:
     - **Simples**: `class B extends A` (B herda de A)
@@ -360,10 +311,8 @@
 
     Java **não** suporta herança múltipla de classes (class C extends A, B), mas permite implementar múltiplas interfaces.
 
-8. Por que Java não suporta herança múltipla de classes?
-    R: Não sei
-
-    **[Não respondida]** Por causa do **Problema do Diamante**: se duas classes pai (`A` e `B`) têm um método com o mesmo nome e uma classe filha (`C`) herda de ambas, o compilador não saberia qual versão do método usar.
+23. Por que Java não suporta herança múltipla de classes?
+    R: Por causa do **Problema do Diamante**: se duas classes pai (`A` e `B`) têm um método com o mesmo nome e uma classe filha (`C`) herda de ambas, o compilador não saberia qual versão do método usar.
 
     ```
          Animal
@@ -375,10 +324,8 @@
 
     Java resolve isso permitindo **múltiplas interfaces** (que não têm implementação por padrão) e, a partir do Java 8, se duas interfaces tiverem `default methods` iguais, a classe que implementa ambas **é obrigada** a resolver a ambiguidade explicitamente.
 
-9. O que é composição e por que é preferível à herança em muitos casos?
-    R: não sei
-
-    **[Não respondida]** Composição é quando uma classe **contém** uma instância de outra classe como atributo, em vez de herdar dela. É a relação "TEM UM" em vez de "É UM".
+24. O que é composição e por que é preferível à herança em muitos casos?
+    R: Composição é quando uma classe **contém** uma instância de outra classe como atributo, em vez de herdar dela. É a relação "TEM UM" em vez de "É UM".
 
     ```java
     // HERANÇA: Carro É UM Motor? Não faz sentido.
@@ -400,10 +347,8 @@
 
     Princípio famoso: **"Favoreça composição sobre herança"** (Gang of Four).
 
-10. O que é o princípio SOLID? Explique cada um dos cinco princípios.
-    R: só lembro do D que é dependency injection que se refere ao pode intejar outros objetos dentro do seu para realizar integrações com banco de dados e serviçoes.
-
-    **[Incorreto]** O "D" é **Dependency Inversion** (Inversão de Dependência), não Dependency Injection. São conceitos relacionados mas diferentes. SOLID são 5 princípios:
+25. O que é o princípio SOLID? Explique cada um dos cinco princípios.
+    R: SOLID são 5 princípios:
 
     - **S - Single Responsibility (Responsabilidade Única)**: uma classe deve ter apenas **um motivo** para mudar. Ex: `UsuarioService` não deve enviar emails - isso é responsabilidade de `EmailService`.
     - **O - Open/Closed (Aberto/Fechado)**: aberto para **extensão**, fechado para **modificação**. Use herança/interfaces para adicionar comportamento sem alterar código existente.
@@ -411,12 +356,8 @@
     - **I - Interface Segregation (Segregação de Interface)**: prefira interfaces pequenas e específicas a uma interface grande. Ex: em vez de `Trabalhador` com `comer()` e `trabalhar()`, crie `Alimentavel` e `Trabalhavel`.
     - **D - Dependency Inversion (Inversão de Dependência)**: dependa de **abstrações** (interfaces), não de implementações concretas. O `PedidoService` deve depender de `RepositorioPedido` (interface), não de `PedidoRepositoryMySQL` (implementação).
 
-    Dependency Injection é a **técnica** usada para aplicar o princípio D (o Spring faz isso com `@Autowired`).
-
-11. Qual a diferença entre coesão e acoplamento?
-    R: acoplamento é você realizar uma implementação que depende de outro, dessa maneira qualquer alteração em um objeto pode impactar em outro. Coesão referece ao endentidimento do código e está bem descrito com variaveis que representam bem aquele codigo.
-
-    **[Parcial]** Acoplamento está no caminho certo. Coesão não é sobre "entendimento do código" ou nomes de variáveis:
+26. Qual a diferença entre coesão e acoplamento?
+    R: 
     - **Coesão (ALTA = bom)**: uma classe faz **uma coisa bem feita**. Todos os seus métodos e atributos estão relacionados a uma única responsabilidade. Ex: `CalculadoraDeImpostos` só calcula impostos.
     - **Acoplamento (BAIXO = bom)**: grau de **dependência** entre classes. Quanto menos uma classe sabe sobre os detalhes internos de outra, melhor. Use interfaces para reduzir acoplamento.
 
@@ -432,11 +373,8 @@
     class RelatorioService { gerarRelatorio(); }
     ```
 
-12. O que são Design Patterns? Cite os que você já utilizou.
-    R: Design Patterns é uma maneira de você padronizar seu código com conceitos que são conhecidos na literatura, como Builder, com ele você definir o valores do objeto um a um e após os campos obrigatorios estarem definidos você realiza o build e o compilador é responasvel por construir aquele objeto da maneira que você definiu. Poderia me ajudar com ooutros?
-
-    **[Parcial]** A definição e o Builder estão razoáveis (embora não seja o compilador, é o próprio Builder que constrói o objeto). Aqui vão os mais cobrados em entrevista:
-
+27. O que são Design Patterns? Cite os que você já utilizou.
+    R: 
     **Criacionais** (como criar objetos):
     - **Singleton**: garante uma única instância da classe em toda a aplicação. Ex: conexão com banco, configuração.
     - **Factory Method**: delega a criação de objetos para subclasses. Ex: `NotificacaoFactory.criar("email")` retorna `EmailNotificacao`.
@@ -452,10 +390,8 @@
 
 ## 3. Tratamento de Exceções
 
-1. Qual a diferença entre `checked` e `unchecked` exceptions?
-    R: unchecked expection está relacionado a exceções que não param o código com RuntimeExpcetion, porém checked expecetions podem quebrar o fluxo do código
-
-    **[Incorreto]** A lógica ficou invertida/confusa. Ambas podem "parar o código" se não tratadas. A diferença real é sobre **obrigatoriedade de tratamento**:
+28. Qual a diferença entre `checked` e `unchecked` exceptions?
+    R: 
     - **Checked exceptions**: o compilador **obriga** você a tratar (com try/catch ou declarar com throws). São exceções previsíveis que podem ser recuperadas. Ex: `IOException`, `SQLException`, `FileNotFoundException`.
     - **Unchecked exceptions**: o compilador **não obriga** tratamento. São erros de programação/lógica. Herdam de `RuntimeException`. Ex: `NullPointerException`, `ArrayIndexOutOfBoundsException`, `IllegalArgumentException`.
 
@@ -468,10 +404,8 @@
     s.length(); // compila, mas lança NullPointerException em execução
     ```
 
-2. Qual a diferença entre `throw` e `throws`?
-    R: Não sei
-
-    **[Não respondida]** São complementares:
+29. Qual a diferença entre `throw` e `throws`?
+    R: São complementares:
     - **`throw`**: usado para **lançar** uma exceção explicitamente no corpo do método.
     - **`throws`**: usado na **assinatura** do método para declarar quais checked exceptions ele pode lançar (delegando o tratamento para quem chamar).
 
@@ -485,10 +419,8 @@
     }
     ```
 
-3. O que é e como funciona o bloco `try-with-resources`?
-    R: podemos criar um try com um objeto que será instanciado apenas para aquele bloco try, após o bloco ser finalizado o garbage collector é responsavel por fazer dispose, close ou o que for necessário para encerrar aquele objeto.
-
-    **[Parcial]** A ideia está certa, mas **não é o Garbage Collector** que fecha o recurso. O próprio `try-with-resources` chama automaticamente o método `close()` da interface `AutoCloseable` ao final do bloco, mesmo que ocorra exceção:
+30. O que é e como funciona o bloco `try-with-resources`?
+    R: O próprio `try-with-resources` chama automaticamente o método `close()` da interface `AutoCloseable` ao final do bloco, mesmo que ocorra exceção:
 
     ```java
     // Sem try-with-resources (verboso e propenso a erros):
@@ -508,19 +440,15 @@
 
     O objeto precisa implementar `AutoCloseable` (ou `Closeable`).
 
-4. É possível ter um bloco `try` sem `catch`? E sem `finally`?
-    R: É possivel sim, mas nunca sem ambos, ou seja, podemos ter try/catch, e try/finally, mas nunca apenas try.
-
-    **[Correto]** Excelente resposta! As combinações válidas são:
+31. É possível ter um bloco `try` sem `catch`? E sem `finally`?
+    R: 
     - `try / catch`
     - `try / finally`
     - `try / catch / finally`
     - `try-with-resources` (pode existir sem catch e sem finally, pois o close é implícito)
 
-5. Qual a diferença entre `Error` e `Exception`?
-    R: Error são exções relacionadas a estrutura do Java, como stackoverflow, e coisas afins, já as exceptions são erros que não encerram a aplicação, podem ser erorr tratados ou não pelo desenvolvedor.
-
-    **[Parcial]** A ideia está no caminho certo, mas vamos ser mais precisos:
+32. Qual a diferença entre `Error` e `Exception`?
+    R: 
     - **Error**: problemas graves da **JVM/ambiente** que a aplicação geralmente **não deve tentar tratar**. Ex: `OutOfMemoryError`, `StackOverflowError`, `NoClassDefFoundError`. Indicam que algo está fundamentalmente errado.
     - **Exception**: problemas da **aplicação** que **podem e devem** ser tratados pelo desenvolvedor. Ex: `IOException`, `NullPointerException`, `SQLException`.
 
@@ -533,10 +461,9 @@
         └── RuntimeException - Unchecked (NullPointer, IndexOutOfBounds...)
     ```
 
-6. O que acontece se uma exceção for lançada dentro de um bloco `finally`?
-    R: o throw é disparado para classe acima, como erro não tratado.
-
-    **[Parcial]** Sim, a exceção do `finally` é propagada, mas o ponto mais importante é que **a exceção original do try/catch é perdida (suprimida)**:
+33. O que acontece se uma exceção for lançada dentro de um bloco `finally`?
+    R: 
+    **a exceção original do try/catch é perdida (suprimida)**:
 
     ```java
     try {
@@ -550,10 +477,8 @@
 
     Por isso, evite lançar exceções no `finally`. Se precisar, use `try-with-resources` que gerencia isso corretamente com **suppressed exceptions**.
 
-7. Quando criar uma exceção customizada?
-    R: Pode-se criar uma exceção customizada quando a integração com outros programas tem cenários expecificos e assim faz-se necessario a sua criação
-
-    **[Parcial]** Não é só para integrações. Crie exceções customizadas quando:
+34. Quando criar uma exceção customizada?
+    R: 
     - As exceções padrão do Java **não representam** adequadamente o erro do seu domínio. Ex: `SaldoInsuficienteException`, `PedidoNaoEncontradoException`.
     - Você quer que o **chamador trate erros específicos** de formas diferentes.
     - Para **padronizar mensagens** de erro na sua aplicação (muito usado em APIs REST).
@@ -567,10 +492,8 @@
     }
     ```
 
-8. Qual a hierarquia de exceções em Java?
-    R: não sei
-
-    **[Não respondida]** A hierarquia completa é:
+35. Qual a hierarquia de exceções em Java?
+    R: 
     ```
     Object
     └── Throwable                          (raiz de tudo que pode ser lançado)
@@ -591,21 +514,16 @@
 
 ## 4. Collections Framework
 
-1. Qual a diferença entre `List`, `Set` e `Map`?
-    R: List é indexado e Set, Map não, Set contem valores únicos e Map possiu chave e valor, e suas chaves são unicas, mas valores podem ser repetidos.
-
-    **[Parcial]** A descrição de Set e Map está boa! Mas precisamos corrigir alguns pontos:
+36. Qual a diferença entre `List`, `Set` e `Map`?
+    R: 
     - **List**: coleção **ordenada** (mantém a ordem de inserção) que **permite duplicatas**. Acesso por índice. Ex: `[A, B, A, C]`
     - **Set**: coleção que **não permite duplicatas**. Não garante ordem (depende da implementação). Ex: `{A, B, C}`
     - **Map**: **não** é uma Collection (não implementa a interface `Collection`). Armazena pares **chave-valor**. Chaves únicas, valores podem repetir. Ex: `{nome=João, idade=30}`
 
     Detalhe importante: `Map` **não** faz parte da hierarquia de `Collection`, apesar de estar no Collections Framework.
 
-2. Qual a diferença entre `ArrayList` e `LinkedList`?
-    R: O arraylist é indexado e o linkedlist não, para interar numa lista encadead precisamos usar stream ou while.
-
-    **[Incorreto]** Ambos implementam `List`, então ambos **são indexados** (você pode fazer `linkedList.get(0)`). A diferença é na **estrutura interna** e **performance**:
-
+37. Qual a diferença entre `ArrayList` e `LinkedList`?
+    R:
     | Operação            | ArrayList         | LinkedList          |
     |---------------------|-------------------|---------------------|
     | Estrutura interna   | Array dinâmico    | Nós duplamente encadeados |
@@ -617,7 +535,7 @@
 
     Na prática, **ArrayList** é a escolha padrão em 95% dos casos por causa do cache de CPU e acesso direto.
 
-3. Qual a diferença entre `ArrayList` e `Vector`?
+38. Qual a diferença entre `ArrayList` e `Vector`?
     R: não sei
 
     **[Não respondida]** Ambos são listas baseadas em array, mas:
@@ -626,7 +544,7 @@
 
     Na prática: **nunca use Vector**. Use `ArrayList` e, se precisar de thread-safety, use `Collections.synchronizedList()` ou `CopyOnWriteArrayList`.
 
-4. Qual a diferença entre `HashSet`, `LinkedHashSet` e `TreeSet`?
+39. Qual a diferença entre `HashSet`, `LinkedHashSet` e `TreeSet`?
     R: Não sei
 
     **[Não respondida]** Todos implementam `Set` (sem duplicatas), mas diferem na **ordem** e **performance**:
@@ -640,7 +558,7 @@
     Set<Integer> tree   = new TreeSet<>(List.of(3,1,2));   // [1,2,3] (sempre ordenado)
     ```
 
-5. Qual a diferença entre `HashMap`, `LinkedHashMap` e `TreeMap`?
+40. Qual a diferença entre `HashMap`, `LinkedHashMap` e `TreeMap`?
     R: não sei
 
     **[Não respondida]** Mesma lógica dos Sets, aplicada a Maps:
@@ -648,7 +566,7 @@
     - **LinkedHashMap**: mantém **ordem de inserção** (ou ordem de acesso, se configurado). Útil para caches LRU.
     - **TreeMap**: mantém as **chaves ordenadas**. O(log n). Útil quando precisa de navegação ordenada (`firstKey()`, `lastKey()`).
 
-6. Qual a diferença entre `HashMap` e `Hashtable`?
+41. Qual a diferença entre `HashMap` e `Hashtable`?
     R: não sei
 
     **[Não respondida]**
@@ -657,7 +575,7 @@
 
     Na prática: **nunca use Hashtable**. Use `HashMap` e, se precisar de thread-safety, use `ConcurrentHashMap`.
 
-7. Como funciona internamente o `HashMap`?
+42. Como funciona internamente o `HashMap`?
     R: não sei
 
     **[Não respondida]** O HashMap usa um **array de buckets** (posições) e uma função hash:
@@ -668,7 +586,7 @@
 
     Por isso é essencial sobrescrever **tanto** `hashCode()` **quanto** `equals()` ao usar objetos customizados como chave!
 
-8. O que acontece quando dois objetos têm o mesmo hashCode no `HashMap`?
+43. O que acontece quando dois objetos têm o mesmo hashCode no `HashMap`?
     R: crash kk não sei
 
     **[Não respondida]** Não dá crash! Isso é chamado de **colisão de hash** e é tratado normalmente:
@@ -677,7 +595,7 @@
     - A partir do Java 8: se a lista no bucket ultrapassar **8 elementos**, ela é convertida em uma **árvore red-black** (de O(n) para O(log n)).
     - Na busca, o HashMap usa `equals()` para distinguir entre as chaves no mesmo bucket.
 
-9. Qual a diferença entre `Comparable` e `Comparator`?
+44. Qual a diferença entre `Comparable` e `Comparator`?
     R: Não sei
 
     **[Não respondida]** Ambos servem para **ordenar objetos**, mas de formas diferentes:
@@ -696,7 +614,7 @@
     Collections.sort(pessoas, Comparator.comparingInt(p -> p.idade)); // ordena por idade
     ```
 
-10. O que é `ConcurrentHashMap` e quando usar?
+45. O que é `ConcurrentHashMap` e quando usar?
     R: Não sei
 
     **[Não respondida]** É uma implementação **thread-safe** de `Map` otimizada para alta concorrência:
@@ -704,14 +622,14 @@
     - Não permite chaves ou valores `null`.
     - Use quando múltiplas threads precisam acessar o mesmo Map. Cenários comuns: caches, contadores compartilhados, registros de sessão.
 
-11. Qual a diferença entre `Iterator` e `ListIterator`?
+46. Qual a diferença entre `Iterator` e `ListIterator`?
     R: não sei
 
     **[Não respondida]**
     - **Iterator**: percorre qualquer `Collection` em **uma direção** (para frente). Métodos: `hasNext()`, `next()`, `remove()`.
     - **ListIterator**: exclusivo para `List`. Percorre em **ambas direções**. Métodos adicionais: `hasPrevious()`, `previous()`, `add()`, `set()`, `nextIndex()`.
 
-12. O que é o `fail-fast` e `fail-safe` em collections?
+47. O que é o `fail-fast` e `fail-safe` em collections?
     R: Não sei
 
     **[Não respondida]**
@@ -728,7 +646,7 @@
     // Solução: use Iterator.remove() ou CopyOnWriteArrayList
     ```
 
-13. Quando usar `Queue` e `Deque`?
+48. Quando usar `Queue` e `Deque`?
     R: Não sei
 
     **[Não respondida]**
@@ -745,7 +663,7 @@
     pilha.pop();             // remove do início (LIFO)
     ```
 
-14. O que é o `Collections.unmodifiableList()`?
+49. O que é o `Collections.unmodifiableList()`?
     R: Não sei
 
     **[Não respondida]** Retorna uma **visão somente leitura** de uma lista. Qualquer tentativa de modificar (add, remove, set) lança `UnsupportedOperationException`:
@@ -764,7 +682,7 @@
 
 ## 5. Java 8+ (Recursos Modernos)
 
-1. O que são expressões lambda e qual sua sintaxe?
+50. O que são expressões lambda e qual sua sintaxe?
     R: lambda expression é uma maneira de utilizar aquela funcão com objeto definido funcao() { (r -> String) r.toInt() } algo assim
 
     **[Parcial]** A ideia de "função como objeto" está no caminho certo, mas a sintaxe ficou incorreta. Lambda é uma forma concisa de representar uma **função anônima** que pode ser passada como argumento:
@@ -787,7 +705,7 @@
     (String s) -> { return s.toUpperCase(); } // com tipo e bloco
     ```
 
-2. O que são interfaces funcionais? Cite exemplos do pacote `java.util.function`.
+51. O que são interfaces funcionais? Cite exemplos do pacote `java.util.function`.
     R: Não sei
 
     **[Não respondida]** Interface funcional é uma interface que possui **exatamente um método abstrato**. É o que permite usar lambdas, pois o compilador sabe qual método está sendo implementado. Marcada com `@FunctionalInterface`.
@@ -799,7 +717,7 @@
     - **`Supplier<T>`**: não recebe nada, retorna T. `Supplier<Double> s = () -> Math.random();`
     - **`BiFunction<T,U,R>`**: recebe T e U, retorna R.
 
-3. O que é a Stream API e quais são suas operações intermediárias e terminais?
+52. O que é a Stream API e quais são suas operações intermediárias e terminais?
     R: Não sei
 
     **[Não respondida]** Stream API é uma forma de processar coleções de forma **declarativa** (diz O QUE quer, não COMO fazer), semelhante a SQL. Não altera a coleção original.
@@ -821,7 +739,7 @@
     // resultado: [AMANDA, ANA]
     ```
 
-4. Qual a diferença entre `map()` e `flatMap()`?
+53. Qual a diferença entre `map()` e `flatMap()`?
     R: Não sei
 
     **[Não respondida]**
@@ -841,7 +759,7 @@
     // Com flatMap:       [1, 2, 3, 4]   (Stream de Integers)
     ```
 
-5. O que é `Optional` e por que foi introduzido?
+54. O que é `Optional` e por que foi introduzido?
     R: Optional é uma maneira de utilizar objetos sem valores, com ele podemos verificar se o objeto tem valor sem ter que usar o primitivo null
 
     **[Parcial]** A ideia central está correta! Complementando: `Optional<T>` é um container que **pode ou não conter um valor**. Foi introduzido no Java 8 para **evitar `NullPointerException`** e tornar explícito que um retorno pode ser vazio:
@@ -864,7 +782,7 @@
     u.ifPresent(v -> ...);  // executa ação se presente
     ```
 
-6. Qual a diferença entre `Stream` sequencial e paralela?
+55. Qual a diferença entre `Stream` sequencial e paralela?
     R: Não sei
 
     **[Não respondida]**
@@ -878,7 +796,7 @@
 
     Cuidado: parallelStream nem sempre é mais rápido! Só compensa com **coleções grandes** e **operações pesadas**. Para coleções pequenas, o overhead de gerenciar threads é maior que o ganho.
 
-7. O que é method reference e quais são seus tipos?
+56. O que é method reference e quais são seus tipos?
     R: Não sei
 
     **[Não respondida]** Method reference é um atalho para lambdas quando você apenas chama um método existente. Usa a sintaxe `::`:
@@ -890,7 +808,7 @@
     | Método de instância (tipo)    | `String::toUpperCase`      | `s -> s.toUpperCase()`        |
     | Construtor                    | `ArrayList::new`           | `() -> new ArrayList<>()`     |
 
-8. Qual a diferença entre `forEach()` e `for-each` loop?
+57. Qual a diferença entre `forEach()` e `for-each` loop?
     R: forEach é uma stream e for-each é a estrutura.
 
     **[Parcial]** A distinção está correta na essência, mas `forEach` não é exclusivo de Stream:
@@ -907,7 +825,7 @@
     lista.forEach(s -> System.out.println(s)); // não pode usar break
     ```
 
-9. O que são default methods em interfaces?
+58. O que são default methods em interfaces?
     R: Não sei
 
     **[Não respondida]** Introduzidos no Java 8, são métodos **com implementação** dentro de interfaces, usando a palavra `default`. Permitem adicionar novos métodos a interfaces existentes sem quebrar as classes que já as implementam:
@@ -927,7 +845,7 @@
 
     Foram criados principalmente para que a Oracle pudesse adicionar métodos na Stream API sem quebrar todas as coleções existentes.
 
-10. O que mudou na API de data e hora do Java 8 (`java.time`)?
+59. O que mudou na API de data e hora do Java 8 (`java.time`)?
     R: Não sei
 
     **[Não respondida]** O Java 8 introduziu o pacote `java.time` para substituir as classes problemáticas `Date` e `Calendar`. As novas classes são **imutáveis** e **thread-safe**:
@@ -947,7 +865,7 @@
     Period ate = Period.between(hoje, natal); // "9 meses e 1 dia"
     ```
 
-11. Quais foram as principais novidades do Java 11, 17 e 21 (LTS)?
+60. Quais foram as principais novidades do Java 11, 17 e 21 (LTS)?
     R: Não sei
 
     **[Não respondida]** Principais novidades das versões LTS:
@@ -971,7 +889,7 @@
     - **Record Patterns**: desestruturação de records
     - **Sequenced Collections**: `sequencedCollection.getFirst()`, `getLast()`
 
-12. O que são Records em Java?
+61. O que são Records em Java?
     R: records são uma maneira de escrever classes sem ter que definir get e set, como é o padrão no java,
 
     **[Parcial]** Records vão além de apenas evitar getters/setters. São classes **imutáveis** para transportar dados, onde o compilador gera automaticamente:
@@ -1001,7 +919,7 @@
 
     Importante: records são **imutáveis** - os campos são `final` e não têm setters.
 
-13. O que são Sealed Classes?
+62. O que são Sealed Classes?
     R: Não sei
 
     **[Não respondida]** Sealed Classes (Java 17) permitem **controlar quais classes** podem herdar da sua classe. Você declara explicitamente as subclasses permitidas:
@@ -1018,7 +936,7 @@
 
     Útil para: representar domínios fechados (tipos de pagamento, estados de pedido) e funciona muito bem com **pattern matching** no switch.
 
-14. O que é Pattern Matching no Java?
+63. O que é Pattern Matching no Java?
     R: Não sei
 
     **[Não respondida]** Pattern Matching permite testar o tipo de um objeto e extrair dados dele em uma única operação, eliminando casts manuais:
@@ -1046,7 +964,7 @@
 
 ## 6. Multithreading e Concorrência
 
-1. Qual a diferença entre processo e thread?
+64. Qual a diferença entre processo e thread?
     R: Não sei
 
     **[Não respondida]**
@@ -1063,7 +981,7 @@
     Cada uma tem: sua própria stack
     ```
 
-2. Quais são as formas de criar uma thread em Java?
+65. Quais são as formas de criar uma thread em Java?
     R: Podemos criar thread com Thread object e usar o run para inicia-la, porem não conheco outras.
 
     **[Parcial]** Cuidado: usa-se `start()` para iniciar, não `run()` (chamar `run()` direto executa na mesma thread!). Existem 4 formas principais:
@@ -1088,7 +1006,7 @@
     executor.submit(() -> System.out.println("Pool rodando"));
     ```
 
-3. Qual a diferença entre `Runnable` e `Callable`?
+66. Qual a diferença entre `Runnable` e `Callable`?
     R: Não sei
 
     **[Não respondida]**
@@ -1108,7 +1026,7 @@
     String resultado = future.get(); // bloqueia até ter resultado: "Com retorno!"
     ```
 
-4. O que é sincronização e por que é necessária?
+67. O que é sincronização e por que é necessária?
     R: Não sei
 
     **[Não respondida]** Sincronização é o mecanismo que garante que **apenas uma thread** acesse um recurso compartilhado por vez, evitando **condições de corrida** (race conditions):
@@ -1129,7 +1047,7 @@
     }
     ```
 
-5. Qual a diferença entre `synchronized` method e `synchronized` block?
+68. Qual a diferença entre `synchronized` method e `synchronized` block?
     R: Não sei
 
     **[Não respondida]**
@@ -1154,7 +1072,7 @@
 
     Prefira `synchronized block` quando só uma parte do método precisa de sincronização.
 
-6. O que é deadlock e como evitá-lo?
+69. O que é deadlock e como evitá-lo?
     R: deadlock é quando uma thread está aguardando uma resposta de uma outra thread que depende daquela que está em standby, dessa maneira elas nunca vão concluir. Se não houver um fator externo para encerra-las realizar as thread dependentes de maneira sincronizada.
 
     **[Parcial]** A definição está boa! Porém, a solução "sincronizar" na verdade é a **causa** do deadlock, não a solução. Vamos clarificar:
@@ -1172,7 +1090,7 @@
     - **Evite locks aninhados**: minimize a necessidade de travar múltiplos recursos.
     - **Use pacote `java.util.concurrent`**: classes como `ConcurrentHashMap` já lidam com concorrência internamente.
 
-7. O que é a palavra-chave `volatile`?
+70. O que é a palavra-chave `volatile`?
     R: Não sei
 
     **[Não respondida]** `volatile` garante que o valor de uma variável é sempre lido da **memória principal**, não do cache local da thread. Resolve o problema de **visibilidade**:
@@ -1191,7 +1109,7 @@
 
     Importante: `volatile` garante **visibilidade**, mas **não garante atomicidade**. Para operações como `i++`, use `AtomicInteger`.
 
-8. Qual a diferença entre `wait()`, `notify()` e `notifyAll()`?
+71. Qual a diferença entre `wait()`, `notify()` e `notifyAll()`?
     R: Não sei
 
     **[Não respondida]** São métodos de `Object` usados para **comunicação entre threads** dentro de blocos synchronized:
@@ -1214,7 +1132,7 @@
     }
     ```
 
-9. O que é o `ExecutorService` e quais são seus tipos de thread pool?
+72. O que é o `ExecutorService` e quais são seus tipos de thread pool?
     R: Não sei
 
     **[Não respondida]** `ExecutorService` é uma interface que gerencia um **pool de threads** reutilizáveis, evitando o custo de criar/destruir threads manualmente:
@@ -1233,7 +1151,7 @@
     executor.shutdown(); // IMPORTANTE: sempre encerrar quando terminar
     ```
 
-10. O que é `CompletableFuture` e como funciona?
+73. O que é `CompletableFuture` e como funciona?
     R: Não sei
 
     **[Não respondida]** `CompletableFuture` é uma classe do Java 8 para **programação assíncrona**. Permite encadear operações que executam em threads separadas, sem bloquear:
@@ -1250,7 +1168,7 @@
     futuro1.thenCombine(futuro2, (a, b) -> a + " " + b); // "Hello World"
     ```
 
-11. Qual a diferença entre `sleep()` e `wait()`?
+74. Qual a diferença entre `sleep()` e `wait()`?
     R: Não sei
 
     **[Não respondida]**
@@ -1262,7 +1180,7 @@
     | Contexto        | Qualquer lugar         | Dentro de `synchronized`  |
     | Propósito       | Pausar a thread        | Comunicação entre threads |
 
-12. O que é a classe `ThreadLocal`?
+75. O que é a classe `ThreadLocal`?
     R: Não sei
 
     **[Não respondida]** `ThreadLocal` permite que cada thread tenha sua **própria cópia** de uma variável, evitando compartilhamento e problemas de concorrência:
@@ -1282,7 +1200,7 @@
     Uso comum: armazenar informações do usuário logado em aplicações web (cada requisição é uma thread).
     Cuidado: sempre use `remove()` ao final para evitar **memory leaks**, especialmente com thread pools.
 
-13. O que são locks reentrantes (`ReentrantLock`)?
+76. O que são locks reentrantes (`ReentrantLock`)?
     R: Não sei
 
     **[Não respondida]** `ReentrantLock` é uma alternativa mais flexível ao `synchronized`. "Reentrante" significa que a mesma thread pode adquirir o lock **múltiplas vezes** sem causar deadlock consigo mesma:
@@ -1307,7 +1225,7 @@
     }
     ```
 
-14. O que é o problema de visibilidade de memória em threads?
+77. O que é o problema de visibilidade de memória em threads?
     R: Não sei
 
     **[Não respondida]** Cada thread pode manter uma **cópia local (cache)** de variáveis para performance. O problema é que alterações feitas por uma thread podem **não ser visíveis** para outras:
@@ -1329,7 +1247,7 @@
 
 ## 7. Generics
 
-1. O que são Generics e por que foram introduzidos?
+78. O que são Generics e por que foram introduzidos?
     R: Generics são Classes que permitem receber objetos dinamicamente, dessa maneira você consegue escrever funcões genericas para serem reutilizadas diferentes classes.
 
     **[Parcial]** A ideia de reuso está correta! Complementando, Generics foram introduzidos no Java 5 por dois motivos principais:
@@ -1350,7 +1268,7 @@
     String s = lista.get(0); // sem cast necessário
     ```
 
-2. Qual a diferença entre `<? extends T>` e `<? super T>`?
+79. Qual a diferença entre `<? extends T>` e `<? super T>`?
     R: Não sei
 
     **[Não respondida]** São wildcards bounded (coringas limitados):
@@ -1371,7 +1289,7 @@
     Cachorro c = lista.get(0); // ERRO! Não sabe o tipo exato
     ```
 
-3. O que é Type Erasure?
+80. O que é Type Erasure?
     R: Não sei
 
     **[Não respondida]** Type Erasure é o processo pelo qual o compilador Java **remove** todas as informações de tipos genéricos em tempo de compilação, substituindo por `Object` (ou pelo bound, se houver). Em runtime, generics não existem:
@@ -1390,7 +1308,7 @@
 
     Consequência: você não pode fazer `new T()`, `instanceof List<String>` ou `new T[]` em runtime, pois o tipo genérico não existe mais.
 
-4. É possível criar um array de tipos genéricos? Por quê?
+81. É possível criar um array de tipos genéricos? Por quê?
     R: Não sei
 
     **[Não respondida]** **Não**, Java não permite criar arrays de tipos genéricos diretamente:
@@ -1409,7 +1327,7 @@
 
     Alternativa: use `List<List<String>>` em vez de arrays de generics.
 
-5. O que é o diamond operator (`<>`)?
+82. O que é o diamond operator (`<>`)?
     R: Não sei
 
     **[Não respondida]** O diamond operator `<>` (Java 7) permite omitir o tipo genérico do lado direito quando o compilador consegue **inferir** o tipo:
@@ -1427,14 +1345,14 @@
 
 ## 8. Testes
 
-1. Qual a diferença entre testes unitários e testes de integração?
+83. Qual a diferença entre testes unitários e testes de integração?
     R: Testes unitários servem para testar a menor unidade de código, fazendo com que eles sejam coesos e não vão fugir daquele que é suposto realizar, já testes de integração são testes mais complexos que podem validar uma cadeia inteira da aplicação ou um serviço especifico.
 
     **[Correto]** Excelente resposta! Para complementar com terminologia técnica:
     - **Unitários**: testam uma **classe/método isoladamente**, mockando dependências. Rápidos (milissegundos). Rodam sem infraestrutura.
     - **Integração**: testam a **interação entre componentes** reais (banco, API, filas). Mais lentos. Precisam de infraestrutura.
 
-2. O que é TDD (Test Driven Development)?
+84. O que é TDD (Test Driven Development)?
     R: É você escrever o test antes do código, dessa maneira você vai está detalhando a funcionalidade do negócio e depois vai escrevendo o código afim de fazer os testes passarem e concluir a feature.
 
     **[Correto]** Muito boa! Complementando com o ciclo oficial do TDD (**Red-Green-Refactor**):
@@ -1442,7 +1360,7 @@
     2. **Green**: escreve o código **mínimo** necessário para o teste passar
     3. **Refactor**: melhora o código mantendo os testes passando
 
-3. O que são mocks e quando usá-los?
+85. O que são mocks e quando usá-los?
     R: Mock é uma maneira de você forjar a resposta de integrações aquela classe para fazer testes unitários isolados e com valores conhecidos referntes a integração.
 
     **[Correto]** Boa definição! Complementando:
@@ -1457,7 +1375,7 @@
     // Agora o teste não depende do banco e sempre retorna "João"
     ```
 
-4. Qual a diferença entre `@Mock` e `@InjectMocks` no Mockito?
+86. Qual a diferença entre `@Mock` e `@InjectMocks` no Mockito?
     R: @Mock está associado ao Objeto não @Bean, já o @InjectMocks está associado ao injeções de dependencias.
 
     **[Incorreto]** Não tem relação com `@Bean`. A diferença é:
@@ -1482,7 +1400,7 @@
     }
     ```
 
-5. O que é o JUnit 5 e quais suas principais anotações?
+87. O que é o JUnit 5 e quais suas principais anotações?
     R: JUnit 5 é a versão atualizada do JUnit4 e vem com muitas diferentes refentes a anotações e como escrever os testes.
 
     **[Parcial]** Correto que é a evolução, mas uma resposta de entrevista precisa citar as anotações:
@@ -1507,58 +1425,58 @@
 
 ## 9. Conceitos Básicos do Spring
 
-1. O que é o Spring Framework e qual problema ele resolve?
-2. O que é Inversão de Controle (IoC) e Injeção de Dependência (DI)?
-3. Qual a diferença entre Spring e Spring Boot?
-4. O que são Spring Boot Starters?
-5. O que é o arquivo `application.properties` / `application.yml`?
-6. Como funciona a auto-configuração (auto-configuration) do Spring Boot?
-7. O que é o Spring Initializr?
+88. O que é o Spring Framework e qual problema ele resolve?
+89. O que é Inversão de Controle (IoC) e Injeção de Dependência (DI)?
+90. Qual a diferença entre Spring e Spring Boot?
+91. O que são Spring Boot Starters?
+92. O que é o arquivo `application.properties` / `application.yml`?
+93. Como funciona a auto-configuração (auto-configuration) do Spring Boot?
+94. O que é o Spring Initializr?
 
 ## 10. Beans e Configuração
 
-1. O que é um Bean no contexto do Spring?
-2. Quais são os escopos de um Bean (`singleton`, `prototype`, `request`, `session`)?
-3. Qual a diferença entre `@Component`, `@Service`, `@Repository` e `@Controller`?
-4. Qual a diferença entre `@Autowired` por campo, construtor e setter? Qual é a recomendada?
-5. O que é `@Qualifier` e quando usar?
-6. O que é `@Configuration` e `@Bean`?
-7. Qual a diferença entre `@Primary` e `@Qualifier`?
-8. O que é o ciclo de vida de um Bean no Spring?
+95. O que é um Bean no contexto do Spring?
+96. Quais são os escopos de um Bean (`singleton`, `prototype`, `request`, `session`)?
+97. Qual a diferença entre `@Component`, `@Service`, `@Repository` e `@Controller`?
+98. Qual a diferença entre `@Autowired` por campo, construtor e setter? Qual é a recomendada?
+99. O que é `@Qualifier` e quando usar?
+100. O que é `@Configuration` e `@Bean`?
+101. Qual a diferença entre `@Primary` e `@Qualifier`?
+102. O que é o ciclo de vida de um Bean no Spring?
 
 ## 11. API REST com Spring Boot
 
-1. Qual a diferença entre `@Controller` e `@RestController`?
-2. O que são `@GetMapping`, `@PostMapping`, `@PutMapping` e `@DeleteMapping`?
-3. Qual a diferença entre `@RequestParam`, `@PathVariable` e `@RequestBody`?
-4. Como fazer tratamento global de exceções com `@ControllerAdvice` e `@ExceptionHandler`?
-5. O que é `ResponseEntity` e quando usar?
-6. Como fazer validação de dados com Bean Validation (`@Valid`, `@NotNull`, `@Size`)?
-7. O que é HATEOAS?
-8. Como versionar uma API REST?
-9. O que é o Swagger/OpenAPI e como integrar com Spring Boot?
+103. Qual a diferença entre `@Controller` e `@RestController`?
+104. O que são `@GetMapping`, `@PostMapping`, `@PutMapping` e `@DeleteMapping`?
+105. Qual a diferença entre `@RequestParam`, `@PathVariable` e `@RequestBody`?
+106. Como fazer tratamento global de exceções com `@ControllerAdvice` e `@ExceptionHandler`?
+107. O que é `ResponseEntity` e quando usar?
+108. Como fazer validação de dados com Bean Validation (`@Valid`, `@NotNull`, `@Size`)?
+109. O que é HATEOAS?
+110. Como versionar uma API REST?
+111. O que é o Swagger/OpenAPI e como integrar com Spring Boot?
 
 ## 12. Spring Security
 
-1. O que é o Spring Security e como funciona o filtro de segurança?
-2. Qual a diferença entre autenticação e autorização?
-3. O que é JWT (JSON Web Token) e como implementar com Spring Security?
-4. O que são `@PreAuthorize` e `@Secured`?
-5. Como configurar CORS no Spring Boot?
-6. O que é OAuth2 e como integrar com Spring Security?
+112. O que é o Spring Security e como funciona o filtro de segurança?
+113. Qual a diferença entre autenticação e autorização?
+114. O que é JWT (JSON Web Token) e como implementar com Spring Security?
+115. O que são `@PreAuthorize` e `@Secured`?
+116. Como configurar CORS no Spring Boot?
+117. O que é OAuth2 e como integrar com Spring Security?
 
 ## 13. Spring Boot Avançado
 
-1. O que é Spring AOP (Aspect-Oriented Programming) e quando usar?
-2. O que são Profiles no Spring Boot e como usá-los?
-3. O que é o Spring Actuator e quais endpoints ele expõe?
-4. Como criar um starter customizado no Spring Boot?
-5. O que é o padrão Circuit Breaker e como implementar com Resilience4j?
-6. Qual a diferença entre comunicação síncrona e assíncrona entre microservices?
-7. O que é Spring Cloud e quais são seus principais módulos?
-8. Como funciona o `@Async` no Spring?
-9. O que é o `@Transactional` e como funciona a propagação de transações?
-10. O que é o Spring Scheduler (`@Scheduled`)?
+118. O que é Spring AOP (Aspect-Oriented Programming) e quando usar?
+119. O que são Profiles no Spring Boot e como usá-los?
+120. O que é o Spring Actuator e quais endpoints ele expõe?
+121. Como criar um starter customizado no Spring Boot?
+122. O que é o padrão Circuit Breaker e como implementar com Resilience4j?
+123. Qual a diferença entre comunicação síncrona e assíncrona entre microservices?
+124. O que é Spring Cloud e quais são seus principais módulos?
+125. Como funciona o `@Async` no Spring?
+126. O que é o `@Transactional` e como funciona a propagação de transações?
+127. O que é o Spring Scheduler (`@Scheduled`)?
 
 ---
 
@@ -1566,54 +1484,54 @@
 
 ## 14. Conceitos Fundamentais de JPA/Hibernate
 
-1. O que é JPA e qual a diferença entre JPA e Hibernate?
-2. O que é ORM (Object-Relational Mapping)?
-3. O que é uma entidade JPA e como definir uma?
-4. Qual a diferença entre `EntityManager` e `SessionFactory`?
-5. O que é o `persistence.xml` e o que ele configura?
-6. O que é o contexto de persistência (Persistence Context)?
+128. O que é JPA e qual a diferença entre JPA e Hibernate?
+129. O que é ORM (Object-Relational Mapping)?
+130. O que é uma entidade JPA e como definir uma?
+131. Qual a diferença entre `EntityManager` e `SessionFactory`?
+132. O que é o `persistence.xml` e o que ele configura?
+133. O que é o contexto de persistência (Persistence Context)?
 
 ## 15. Mapeamento de Entidades
 
-1. Quais são as anotações básicas de mapeamento (`@Entity`, `@Table`, `@Column`, `@Id`)?
-2. Quais são as estratégias de geração de ID (`@GeneratedValue`)?
-3. Qual a diferença entre `@OneToOne`, `@OneToMany`, `@ManyToOne` e `@ManyToMany`?
-4. O que é o `mappedBy` e quando usar?
-5. O que é `cascade` e quais são seus tipos?
-6. Qual a diferença entre `FetchType.LAZY` e `FetchType.EAGER`?
-7. O que é `@Embeddable` e `@Embedded`?
-8. Como mapear herança em JPA? Quais são as estratégias (`SINGLE_TABLE`, `TABLE_PER_CLASS`, `JOINED`)?
-9. O que é `@MappedSuperclass`?
+134. Quais são as anotações básicas de mapeamento (`@Entity`, `@Table`, `@Column`, `@Id`)?
+135. Quais são as estratégias de geração de ID (`@GeneratedValue`)?
+136. Qual a diferença entre `@OneToOne`, `@OneToMany`, `@ManyToOne` e `@ManyToMany`?
+137. O que é o `mappedBy` e quando usar?
+138. O que é `cascade` e quais são seus tipos?
+139. Qual a diferença entre `FetchType.LAZY` e `FetchType.EAGER`?
+140. O que é `@Embeddable` e `@Embedded`?
+141. Como mapear herança em JPA? Quais são as estratégias (`SINGLE_TABLE`, `TABLE_PER_CLASS`, `JOINED`)?
+142. O que é `@MappedSuperclass`?
 
 ## 16. Consultas e Performance
 
-1. Qual a diferença entre JPQL, Criteria API e SQL nativo?
-2. O que é o problema N+1 e como resolvê-lo?
-3. Qual a diferença entre `fetch join` e `join` em JPQL?
-4. O que é o cache de primeiro nível e de segundo nível no Hibernate?
-5. O que é o `@NamedQuery` e `@NamedNativeQuery`?
-6. Como funciona a paginação com JPA?
-7. O que é o `@EntityGraph` e quando usar?
-8. O que é Batch Processing no Hibernate e como configurar?
+143. Qual a diferença entre JPQL, Criteria API e SQL nativo?
+144. O que é o problema N+1 e como resolvê-lo?
+145. Qual a diferença entre `fetch join` e `join` em JPQL?
+146. O que é o cache de primeiro nível e de segundo nível no Hibernate?
+147. O que é o `@NamedQuery` e `@NamedNativeQuery`?
+148. Como funciona a paginação com JPA?
+149. O que é o `@EntityGraph` e quando usar?
+150. O que é Batch Processing no Hibernate e como configurar?
 
 ## 17. Transações e Estados de Entidade
 
-1. Quais são os estados de uma entidade no JPA (`transient`, `managed`, `detached`, `removed`)?
-2. O que são os métodos `persist()`, `merge()`, `remove()` e `detach()`?
-3. Qual a diferença entre `save()` e `saveAndFlush()` no Spring Data JPA?
-4. O que é Dirty Checking no Hibernate?
-5. O que é Optimistic Locking e Pessimistic Locking?
-6. Qual a diferença entre `@Version` para controle de concorrência?
+151. Quais são os estados de uma entidade no JPA (`transient`, `managed`, `detached`, `removed`)?
+152. O que são os métodos `persist()`, `merge()`, `remove()` e `detach()`?
+153. Qual a diferença entre `save()` e `saveAndFlush()` no Spring Data JPA?
+154. O que é Dirty Checking no Hibernate?
+155. O que é Optimistic Locking e Pessimistic Locking?
+156. Qual a diferença entre `@Version` para controle de concorrência?
 
 ## 18. Spring Data JPA
 
-1. O que é o Spring Data JPA e qual vantagem ele traz?
-2. O que são Query Methods (derived queries) e como funcionam?
-3. Qual a diferença entre `JpaRepository`, `CrudRepository` e `PagingAndSortingRepository`?
-4. O que é `@Query` e quando usar?
-5. Como fazer projeções (Projections) no Spring Data JPA?
-6. O que é o `Specification` e quando usar?
-7. Como fazer auditoria de entidades com `@CreatedDate`, `@LastModifiedDate`?
+157. O que é o Spring Data JPA e qual vantagem ele traz?
+158. O que são Query Methods (derived queries) e como funcionam?
+159. Qual a diferença entre `JpaRepository`, `CrudRepository` e `PagingAndSortingRepository`?
+160. O que é `@Query` e quando usar?
+161. Como fazer projeções (Projections) no Spring Data JPA?
+162. O que é o `Specification` e quando usar?
+163. Como fazer auditoria de entidades com `@CreatedDate`, `@LastModifiedDate`?
 
 ---
 
@@ -1621,29 +1539,29 @@
 
 ## 19. Fundamentos de SQL
 
-1. Qual a diferença entre `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN` e `FULL OUTER JOIN`?
-2. Qual a diferença entre `WHERE` e `HAVING`?
-3. O que são funções de agregação (`COUNT`, `SUM`, `AVG`, `MIN`, `MAX`) e como usá-las com `GROUP BY`?
-4. Qual a diferença entre `UNION` e `UNION ALL`?
-5. O que são subqueries (subconsultas) e quando usá-las?
-6. Qual a diferença entre `DELETE`, `TRUNCATE` e `DROP`?
-7. O que é uma transação SQL e o que significam as propriedades ACID?
-8. Qual a diferença entre `IN`, `EXISTS` e `JOIN` para filtrar dados? Quando usar cada um?
-9. O que são índices (indexes) e como eles melhoram a performance de consultas?
-10. Qual a diferença entre índice clusterizado (clustered) e não clusterizado (non-clustered)?
+164. Qual a diferença entre `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN` e `FULL OUTER JOIN`?
+165. Qual a diferença entre `WHERE` e `HAVING`?
+166. O que são funções de agregação (`COUNT`, `SUM`, `AVG`, `MIN`, `MAX`) e como usá-las com `GROUP BY`?
+167. Qual a diferença entre `UNION` e `UNION ALL`?
+168. O que são subqueries (subconsultas) e quando usá-las?
+169. Qual a diferença entre `DELETE`, `TRUNCATE` e `DROP`?
+170. O que é uma transação SQL e o que significam as propriedades ACID?
+171. Qual a diferença entre `IN`, `EXISTS` e `JOIN` para filtrar dados? Quando usar cada um?
+172. O que são índices (indexes) e como eles melhoram a performance de consultas?
+173. Qual a diferença entre índice clusterizado (clustered) e não clusterizado (non-clustered)?
 
 ## 20. Modelagem e RDBMS
 
-1. O que são chaves primárias (Primary Key) e chaves estrangeiras (Foreign Key)?
-2. O que é normalização de dados? Explique as três primeiras formas normais (1NF, 2NF, 3NF).
-3. Quando faz sentido desnormalizar um banco de dados?
-4. Qual a diferença entre `CHAR`, `VARCHAR` e `TEXT`?
-5. O que são constraints (`NOT NULL`, `UNIQUE`, `CHECK`, `DEFAULT`, `FOREIGN KEY`)?
-6. O que são stored procedures e functions? Quais as diferenças?
-7. O que são triggers e quando usá-los?
-8. O que são views e materialized views? Qual a diferença?
-9. Quais as principais diferenças entre PostgreSQL, Oracle e SQL Server?
-10. O que é um plano de execução (execution plan) e como usá-lo para otimizar queries?
+174. O que são chaves primárias (Primary Key) e chaves estrangeiras (Foreign Key)?
+175. O que é normalização de dados? Explique as três primeiras formas normais (1NF, 2NF, 3NF).
+176. Quando faz sentido desnormalizar um banco de dados?
+177. Qual a diferença entre `CHAR`, `VARCHAR` e `TEXT`?
+178. O que são constraints (`NOT NULL`, `UNIQUE`, `CHECK`, `DEFAULT`, `FOREIGN KEY`)?
+179. O que são stored procedures e functions? Quais as diferenças?
+180. O que são triggers e quando usá-los?
+181. O que são views e materialized views? Qual a diferença?
+182. Quais as principais diferenças entre PostgreSQL, Oracle e SQL Server?
+183. O que é um plano de execução (execution plan) e como usá-lo para otimizar queries?
 
 ---
 
@@ -1651,20 +1569,20 @@
 
 ## 21. Maven
 
-1. O que é o Maven e qual problema ele resolve no desenvolvimento Java?
-2. O que é o arquivo `pom.xml` e quais são seus elementos principais?
-3. O que é o ciclo de vida do Maven (`clean`, `default`, `site`) e quais são as fases principais?
-4. Qual a diferença entre `mvn compile`, `mvn package`, `mvn install` e `mvn deploy`?
-5. O que são dependências no Maven e como funciona o gerenciamento de dependências transitivas?
-6. Qual a diferença entre `<dependencies>` e `<dependencyManagement>`?
-7. O que é o escopo (scope) de uma dependência (`compile`, `test`, `provided`, `runtime`)?
-8. O que são plugins no Maven e como configurá-los?
-9. O que é um repositório local, remoto e central no Maven?
-10. O que são profiles no Maven e quando usá-los?
-11. Qual a diferença entre `mvn clean install` e `mvn clean install -DskipTests`?
-12. O que é um archetype no Maven?
-13. Como resolver conflitos de dependências no Maven?
-14. Qual a diferença entre Maven e Gradle?
+184. O que é o Maven e qual problema ele resolve no desenvolvimento Java?
+185. O que é o arquivo `pom.xml` e quais são seus elementos principais?
+186. O que é o ciclo de vida do Maven (`clean`, `default`, `site`) e quais são as fases principais?
+187. Qual a diferença entre `mvn compile`, `mvn package`, `mvn install` e `mvn deploy`?
+188. O que são dependências no Maven e como funciona o gerenciamento de dependências transitivas?
+189. Qual a diferença entre `<dependencies>` e `<dependencyManagement>`?
+190. O que é o escopo (scope) de uma dependência (`compile`, `test`, `provided`, `runtime`)?
+191. O que são plugins no Maven e como configurá-los?
+192. O que é um repositório local, remoto e central no Maven?
+193. O que são profiles no Maven e quando usá-los?
+194. Qual a diferença entre `mvn clean install` e `mvn clean install -DskipTests`?
+195. O que é um archetype no Maven?
+196. Como resolver conflitos de dependências no Maven?
+197. Qual a diferença entre Maven e Gradle?
 
 ---
 
@@ -1672,20 +1590,20 @@
 
 ## 22. GIT
 
-1. Qual a diferença entre `git merge` e `git rebase`? Quando usar cada um?
-2. O que é o staging area (index) no Git e como funciona o fluxo `add` -> `commit` -> `push`?
-3. Como resolver um conflito de merge no Git?
-4. Qual a diferença entre `git pull` e `git fetch`?
-5. O que é o `git stash` e quando usá-lo?
-6. O que são branches e qual a importância de uma estratégia de branching (Git Flow, GitHub Flow, Trunk-Based)?
-7. Qual a diferença entre `git reset`, `git revert` e `git checkout`?
-8. O que é um `cherry-pick` e quando usá-lo?
-9. Qual a diferença entre `git reset --soft`, `--mixed` e `--hard`?
-10. O que é o `.gitignore` e como configurá-lo corretamente?
-11. O que são tags no Git e para que servem?
-12. O que é `git bisect` e como usá-lo para encontrar bugs?
-13. Como funciona o `git squash` e quando é útil?
-14. O que são Git hooks e como usá-los?
+198. Qual a diferença entre `git merge` e `git rebase`? Quando usar cada um?
+199. O que é o staging area (index) no Git e como funciona o fluxo `add` -> `commit` -> `push`?
+200. Como resolver um conflito de merge no Git?
+201. Qual a diferença entre `git pull` e `git fetch`?
+202. O que é o `git stash` e quando usá-lo?
+203. O que são branches e qual a importância de uma estratégia de branching (Git Flow, GitHub Flow, Trunk-Based)?
+204. Qual a diferença entre `git reset`, `git revert` e `git checkout`?
+205. O que é um `cherry-pick` e quando usá-lo?
+206. Qual a diferença entre `git reset --soft`, `--mixed` e `--hard`?
+207. O que é o `.gitignore` e como configurá-lo corretamente?
+208. O que são tags no Git e para que servem?
+209. O que é `git bisect` e como usá-lo para encontrar bugs?
+210. Como funciona o `git squash` e quando é útil?
+211. O que são Git hooks e como usá-los?
 
 ---
 
@@ -1693,17 +1611,17 @@
 
 ## 23. Troubleshooting e Debug
 
-1. Quais são os passos que você segue para investigar e resolver um bug em produção?
-2. Como usar o debugger da IDE (breakpoints, step over, step into, watch) para investigar um problema?
-3. O que é stack trace em Java e como interpretá-lo para encontrar a causa raiz de uma exceção?
-4. Quais são as exceções mais comuns em Java (`NullPointerException`, `ClassCastException`, `StackOverflowError`, `OutOfMemoryError`) e como diagnosticá-las?
-5. Como analisar logs de uma aplicação para identificar problemas? Qual a importância de níveis de log (`DEBUG`, `INFO`, `WARN`, `ERROR`)?
-6. O que é um memory leak em Java e como identificá-lo?
-7. O que é um deadlock e como diagnosticá-lo em uma aplicação Java?
-8. Quais ferramentas de profiling e monitoramento você conhece (VisualVM, JConsole, JProfiler, Actuator)?
-9. Como investigar problemas de performance em uma API REST (latência alta, timeout)?
-10. O que são thread dumps e heap dumps e quando usá-los?
-11. Como debugar um problema que só acontece em um ambiente específico (staging/produção) mas não localmente?
+212. Quais são os passos que você segue para investigar e resolver um bug em produção?
+213. Como usar o debugger da IDE (breakpoints, step over, step into, watch) para investigar um problema?
+214. O que é stack trace em Java e como interpretá-lo para encontrar a causa raiz de uma exceção?
+215. Quais são as exceções mais comuns em Java (`NullPointerException`, `ClassCastException`, `StackOverflowError`, `OutOfMemoryError`) e como diagnosticá-las?
+216. Como analisar logs de uma aplicação para identificar problemas? Qual a importância de níveis de log (`DEBUG`, `INFO`, `WARN`, `ERROR`)?
+217. O que é um memory leak em Java e como identificá-lo?
+218. O que é um deadlock e como diagnosticá-lo em uma aplicação Java?
+219. Quais ferramentas de profiling e monitoramento você conhece (VisualVM, JConsole, JProfiler, Actuator)?
+220. Como investigar problemas de performance em uma API REST (latência alta, timeout)?
+221. O que são thread dumps e heap dumps e quando usá-los?
+222. Como debugar um problema que só acontece em um ambiente específico (staging/produção) mas não localmente?
 
 ---
 
@@ -1711,17 +1629,17 @@
 
 ## 24. Code Review e Boas Práticas
 
-1. O que você considera mais importante ao fazer um code review?
-2. O que são code smells? Cite exemplos comuns.
-3. O que são os princípios SOLID e como eles se aplicam na prática?
-4. O que é o princípio DRY (Don't Repeat Yourself) e quando ele pode ser aplicado em excesso?
-5. Qual a diferença entre complexidade ciclomática alta e código limpo? Como reduzir a complexidade?
-6. Quais padrões de projeto (Design Patterns) você mais utiliza no dia a dia? Dê exemplos práticos.
-7. O que é refatoração e quais técnicas de refatoração você conhece (extract method, rename, move, etc.)?
-8. Como identificar e otimizar queries N+1 em uma aplicação Spring/JPA?
-9. Quais práticas você segue para escrever código testável?
-10. O que é análise estática de código e quais ferramentas você conhece (SonarQube, Checkstyle, PMD)?
-11. Como avaliar se uma dependência externa deve ser adicionada ao projeto?
+223. O que você considera mais importante ao fazer um code review?
+224. O que são code smells? Cite exemplos comuns.
+225. O que são os princípios SOLID e como eles se aplicam na prática?
+226. O que é o princípio DRY (Don't Repeat Yourself) e quando ele pode ser aplicado em excesso?
+227. Qual a diferença entre complexidade ciclomática alta e código limpo? Como reduzir a complexidade?
+228. Quais padrões de projeto (Design Patterns) você mais utiliza no dia a dia? Dê exemplos práticos.
+229. O que é refatoração e quais técnicas de refatoração você conhece (extract method, rename, move, etc.)?
+230. Como identificar e otimizar queries N+1 em uma aplicação Spring/JPA?
+231. Quais práticas você segue para escrever código testável?
+232. O que é análise estática de código e quais ferramentas você conhece (SonarQube, Checkstyle, PMD)?
+233. Como avaliar se uma dependência externa deve ser adicionada ao projeto?
 
 ---
 
@@ -1729,13 +1647,13 @@
 
 ## 25. Documentação Técnica
 
-1. Qual a importância de documentação técnica em um projeto de software?
-2. O que é Javadoc e como usá-lo para documentar classes e métodos?
-3. Quando usar comentários no código e quando o código deve ser autoexplicativo?
-4. O que deve conter um bom README de projeto?
-5. Como documentar uma API REST? Qual a diferença entre Swagger/OpenAPI e documentação manual?
-6. O que é um ADR (Architecture Decision Record) e quando usá-lo?
-7. Como documentar processos de deploy e configuração de ambiente?
-8. O que deve conter uma boa mensagem de commit?
-9. Como escrever documentação de troubleshooting/runbook para a equipe de operações?
-10. Qual a diferença entre documentação técnica (para desenvolvedores) e documentação funcional (para stakeholders)?
+234. Qual a importância de documentação técnica em um projeto de software?
+235. O que é Javadoc e como usá-lo para documentar classes e métodos?
+236. Quando usar comentários no código e quando o código deve ser autoexplicativo?
+237. O que deve conter um bom README de projeto?
+238. Como documentar uma API REST? Qual a diferença entre Swagger/OpenAPI e documentação manual?
+239. O que é um ADR (Architecture Decision Record) e quando usá-lo?
+240. Como documentar processos de deploy e configuração de ambiente?
+241. O que deve conter uma boa mensagem de commit?
+242. Como escrever documentação de troubleshooting/runbook para a equipe de operações?
+243. Qual a diferença entre documentação técnica (para desenvolvedores) e documentação funcional (para stakeholders)?
