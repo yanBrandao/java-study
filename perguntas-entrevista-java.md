@@ -1426,57 +1426,815 @@
 ## 9. Conceitos Básicos do Spring
 
 88. O que é o Spring Framework e qual problema ele resolve?
+    R: Spring Framework como qualquer outro framework, é uma estrutura que orienta desenvolvedores de como escrever códigos aplicações Java. Além disso ele possui recursos poderosos para facilitar a construções de serviços web padronizados, testaveis e com agilidade. O Spring possui diversos componentes modulos que implementam segurança, qualidade, auto gerenciamento e muitos outros.
+
+    **[Parcial]** A ideia geral está correta, mas faltou mencionar o problema central que o Spring resolve: o **gerenciamento de dependências e o acoplamento entre objetos**. Antes do Spring, os desenvolvedores precisavam instanciar e gerenciar manualmente todas as dependências das suas classes, o que gerava código fortemente acoplado e difícil de testar. O Spring resolve isso com:
+    - **Inversão de Controle (IoC)**: o framework assume o controle da criação e do ciclo de vida dos objetos.
+    - **Injeção de Dependência (DI)**: o Spring injeta automaticamente as dependências necessárias, promovendo baixo acoplamento.
+    - **Programação declarativa**: com anotações e configurações, reduz o código boilerplate (ex.: transações com `@Transactional`, segurança com `@Secured`).
+    - Além disso, oferece um ecossistema modular (Spring MVC, Spring Security, Spring Data, etc.) para resolver problemas comuns de aplicações enterprise.
+
 89. O que é Inversão de Controle (IoC) e Injeção de Dependência (DI)?
+    R: Não sei o que é inversão de controle, mas injeção de dependencia é o uso instâncias de classes (Bean) como dependencia de outras.
+    Por exemplo, se precisamos criar um serviço, e ele utiliza de base de dados, criamos um repository, e injetamos esse repository no service.
+    Dessa maneira todas as configurações definidas no repository, não precisam ser redefinidas, por ser um @Bean ela já está disponivel para uso.
+
+    **[Parcial]** A explicação de DI está no caminho certo, mas os dois conceitos são distintos e complementares:
+    - **Inversão de Controle (IoC)**: é o princípio em que o controle da criação e gerenciamento dos objetos é **invertido** — em vez de você criar os objetos com `new`, o **container do Spring** (ApplicationContext) faz isso por você. O "controle" que era seu agora é do framework.
+    - **Injeção de Dependência (DI)**: é a **implementação prática** do IoC. O container identifica quais dependências uma classe precisa e as injeta automaticamente (via construtor, setter ou campo).
+
+    Exemplo prático:
+    ```java
+    // SEM IoC/DI — acoplamento forte
+    public class UserService {
+        private UserRepository repo = new UserRepository(); // você cria
+    }
+
+    // COM IoC/DI — o Spring injeta
+    @Service
+    public class UserService {
+        private final UserRepository repo;
+        public UserService(UserRepository repo) { // Spring injeta automaticamente
+            this.repo = repo;
+        }
+    }
+    ```
+    O benefício principal é a **testabilidade**: com DI, você pode facilmente trocar a implementação real por um mock nos testes.
+
 90. Qual a diferença entre Spring e Spring Boot?
+    R: Spring é o conjunto de modulos que implenta recursos especificos, por exemplo o Spring Security tem implementações de modelos de segurança para serem usados na aplicações, porém precisa ser configurado corretamente. O spring boot são modulos que já possuem configurações que facilitam ainda mais o desenvolvimento, com o springboot algumas configurações padrão já são definidas para que os desenvolvedores não precisem tem que definir tudo do zero.
+
+    **[Parcial]** A ideia central está correta, mas vale detalhar melhor as diferenças:
+    - **Spring Framework**: é o framework base que oferece IoC, DI, AOP, Spring MVC, etc. Requer configuração manual (XML ou classes `@Configuration`). Você precisa configurar servidor, datasource, view resolvers, etc.
+    - **Spring Boot**: é uma camada **sobre** o Spring Framework que oferece:
+      - **Auto-configuração**: detecta as dependências no classpath e configura automaticamente (ex.: se tem H2 no classpath, configura um DataSource automaticamente).
+      - **Servidor embutido**: vem com Tomcat/Jetty/Undertow embutido, sem necessidade de deploy em servidor externo.
+      - **Starters**: dependências pré-configuradas que agrupam bibliotecas comuns.
+      - **Opinionated defaults**: convenção sobre configuração — funciona "out of the box" mas permite customização.
+    - Resumo: Spring Boot **não substitui** o Spring, ele **facilita o uso** do Spring eliminando a configuração manual.
+
 91. O que são Spring Boot Starters?
+    R: Starters são conjuntos de módulos que unidos entregam praticamente uma funcionalidade completa, com starter-web por exemplo, já se tem uma aplicação backend web completa para ser executada.
+
+    **[Parcial]** A ideia está correta, mas tecnicamente Starters são **dependências Maven/Gradle pré-configuradas** que agrupam um conjunto de bibliotecas e configurações automáticas para uma funcionalidade específica. Eles seguem a convenção de nome `spring-boot-starter-*`. Exemplos:
+    - `spring-boot-starter-web`: Spring MVC + Tomcat embutido + Jackson (JSON)
+    - `spring-boot-starter-data-jpa`: Spring Data JPA + Hibernate + HikariCP (connection pool)
+    - `spring-boot-starter-security`: Spring Security + configuração padrão de autenticação
+    - `spring-boot-starter-test`: JUnit + Mockito + AssertJ + Spring Test
+
+    O benefício é não precisar declarar cada biblioteca individualmente e se preocupar com compatibilidade de versões — o starter garante que tudo funciona junto.
+
 92. O que é o arquivo `application.properties` / `application.yml`?
+    R: é o arquivo principal para definirmos as configurações do projeto, no application.properties podemos definir valores para debug level, porta da aplicações, além disso podemos ter application properties para diferentes profiles, adicionar apenas um termo como application-dev.properties, dessa maneira utilizamos a flag --spring.profiles-active=dev e isso já altera o perfil utilizado pelo spring. Além disso podemos escrever o mesmo arquivo em YAML, utilizando o application.yml, mas isso só muda a linguagem o proposito é o mesmo.
+
+    **[Correto]** Excelente resposta! Cobriu os pontos principais: configuração centralizada, profiles com `application-{profile}.properties`, ativação via `--spring.profiles-active`, e equivalência entre `.properties` e `.yml`. Um complemento: além da flag na linha de comando, o profile pode ser ativado via variável de ambiente `SPRING_PROFILES_ACTIVE=dev` ou dentro do próprio `application.properties` com `spring.profiles.active=dev`.
+
 93. Como funciona a auto-configuração (auto-configuration) do Spring Boot?
+    R: não sei
+
+    **[Não respondida]** A auto-configuração é um dos pilares do Spring Boot. Funciona assim:
+    1. Quando a aplicação inicia, o Spring Boot escaneia as classes anotadas com `@EnableAutoConfiguration` (já inclusa em `@SpringBootApplication`).
+    2. Ele analisa quais dependências estão presentes no **classpath** (ex.: se `spring-boot-starter-data-jpa` está no projeto, ele detecta classes do Hibernate).
+    3. Com base nisso, registra automaticamente beans com configurações padrão (ex.: cria um `DataSource`, `EntityManagerFactory`, etc.).
+    4. As auto-configurações ficam em classes `@Configuration` dentro de JARs, registradas no arquivo `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`.
+    5. Usa anotações condicionais como `@ConditionalOnClass`, `@ConditionalOnMissingBean`, `@ConditionalOnProperty` para decidir se aplica ou não a configuração.
+
+    Se você definir um bean manualmente (ex.: seu próprio `DataSource`), a auto-configuração **recua** graças ao `@ConditionalOnMissingBean`, respeitando sua configuração customizada.
+
 94. O que é o Spring Initializr?
+    R: o spring initializr é uma aplicação web que está disponivel para criar aplicações spring de acordo com os parametros escolhidos pelo usuários, podemos definir a linguagem que será usada (java ou kotlin), podemos definir a versao do java, os pacotes spring que serão importados, o gerenciador de pacote (maven, gradle-kotlin, gradle-groovy) e alguns outros recursos.
+
+    **[Correto]** Boa resposta! Um complemento: o Spring Initializr está disponível em [start.spring.io](https://start.spring.io) e também é acessível diretamente de IDEs como IntelliJ IDEA e VS Code (via extensão Spring Boot). Além dos parâmetros que você citou, podemos definir o Group, Artifact, tipo de empacotamento (JAR/WAR) e a versão do Spring Boot.
 
 ## 10. Beans e Configuração
 
 95. O que é um Bean no contexto do Spring?
+    R: Bean é a instancia de uma classe que é invocada no boot de uma aplicações spring, dessa maneira se for necessario acessar esse bean por diferentes classes ele vai estar disponivel em diferentes escopos
+
+    **[Parcial]** A ideia está correta, mas vale refinar: um Bean é um **objeto gerenciado pelo container IoC do Spring** (ApplicationContext). Não é apenas "invocado no boot" — o Spring é responsável por todo o ciclo de vida desse objeto: criação, injeção de dependências, inicialização e destruição. Um bean pode ser definido de várias formas:
+    - Via anotações de estereótipo: `@Component`, `@Service`, `@Repository`, `@Controller`
+    - Via método `@Bean` dentro de uma classe `@Configuration`
+    - Via XML (modo legado)
+
+    O ponto principal é que o **Spring controla** esses objetos, diferente de objetos que você cria com `new`.
+
 96. Quais são os escopos de um Bean (`singleton`, `prototype`, `request`, `session`)?
+    R: Aqui está a explicação para cada Bean
+    - Singleton: uma instancia compartilhada para toda aplicação
+    - Prototype: nao sei
+    - Request: a cada novo request recebido pelo controller, uma instancia isolada daquel Bean é construido, de maneira que enquanto aquele request estiver sendo executado ele compartilha a mesma instancia, porém não é possivel ser compartilhado em request diferentes.
+    - Session: nao sei
+
+    **[Parcial]** Singleton e Request estão corretos! Faltou completar:
+    - **Singleton** (padrão): uma única instância compartilhada por toda a aplicação. É o escopo default.
+    - **Prototype**: uma **nova instância é criada toda vez** que o bean é solicitado (injetado ou chamado via `getBean()`). O Spring cria o objeto mas **não gerencia sua destruição**.
+    - **Request**: uma instância por requisição HTTP (como você explicou). Só disponível em contexto web.
+    - **Session**: uma instância por **sessão HTTP do usuário**. Enquanto a sessão do usuário estiver ativa (ex.: enquanto estiver logado), o mesmo bean é reutilizado. Sessões diferentes têm instâncias diferentes.
+
+    Exemplos de uso: `@Scope("prototype")` para beans que mantêm estado mutável; `@SessionScope` para beans que guardam dados do usuário logado (como carrinho de compras).
+
 97. Qual a diferença entre `@Component`, `@Service`, `@Repository` e `@Controller`?
+    R: @Component é uma maneira de definir a classe como @Bean porém sendo representada como @Component, de maneira geral é apenas uma maneira semântica de representar os Beans. Com isso temos especificações, @Service é um filho de Component representando um component mais especifico.
+    @Repository representa um component especifico para armazenamento de dados.
+    @Controller presenta uma camada de apresentação do modelo MVC.
+
+    **[Parcial]** A ideia de que são especializações semânticas de `@Component` está correta! Mas há diferenças técnicas importantes além da semântica:
+    - **`@Component`**: anotação genérica que marca a classe como um bean gerenciado pelo Spring.
+    - **`@Service`**: especialização de `@Component` para a camada de **lógica de negócio**. Funcionalmente é igual ao `@Component` (apenas semântica).
+    - **`@Repository`**: especialização para a camada de **acesso a dados**. Tem um diferencial técnico: ativa a **tradução automática de exceções** — exceções específicas do banco (ex.: `SQLException`) são convertidas em `DataAccessException` do Spring, unificando o tratamento de erros.
+    - **`@Controller`**: especialização para a camada **web/apresentação**. Habilita o tratamento de requisições HTTP (mapeamento de rotas com `@RequestMapping`).
+
+    Todas são detectadas pelo component scan (`@ComponentScan`) e registradas como beans no container.
+
 98. Qual a diferença entre `@Autowired` por campo, construtor e setter? Qual é a recomendada?
+    R: Quando fazemos injeção de dependencia, e utilizamos @Autowired, para carregar o Bean na aplicação que estamos injetando, porém dessa maneira iniciamos o atributo com null e se o bean não estiver disponivel, isso pode causar um erro no startup da aplicação. Se fizemos injeção de dependecia via constructor podemos capturar essa falha na compilação e o atributo nunca será inicializado com null.
+
+    **[Parcial]** O raciocínio sobre a vantagem do construtor está correto! Mas faltou detalhar as três formas e a recomendação:
+    - **Por campo** (`@Autowired` direto no atributo): mais simples de escrever, mas o atributo é `null` até o Spring injetá-lo. Impossibilita o uso de `final` e dificulta testes unitários (precisa de reflexão para injetar mocks).
+    ```java
+    @Autowired
+    private UserRepository repo; // não pode ser final
+    ```
+    - **Por setter**: permite injeção opcional e re-injeção, mas também não garante imutabilidade.
+    ```java
+    @Autowired
+    public void setRepo(UserRepository repo) { this.repo = repo; }
+    ```
+    - **Por construtor** (recomendada): garante que as dependências são obrigatórias, permite `final` (imutabilidade), e facilita testes (basta passar os mocks no construtor). Desde o Spring 4.3, se a classe tem **um único construtor**, o `@Autowired` é opcional.
+    ```java
+    @Service
+    public class UserService {
+        private final UserRepository repo;
+        public UserService(UserRepository repo) { // @Autowired implícito
+            this.repo = repo;
+        }
+    }
+    ```
+
 99. O que é `@Qualifier` e quando usar?
+    R: Não sei
+
+    **[Não respondida]** `@Qualifier` é usado para **desambiguar** qual bean deve ser injetado quando existem **múltiplas implementações** de uma mesma interface. Exemplo:
+    ```java
+    public interface NotificationService { void send(String msg); }
+
+    @Service("email")
+    public class EmailNotification implements NotificationService { ... }
+
+    @Service("sms")
+    public class SmsNotification implements NotificationService { ... }
+
+    @Service
+    public class OrderService {
+        private final NotificationService notification;
+
+        public OrderService(@Qualifier("email") NotificationService notification) {
+            this.notification = notification; // injeta EmailNotification
+        }
+    }
+    ```
+    Sem o `@Qualifier`, o Spring lançaria `NoUniqueBeanDefinitionException` por não saber qual implementação escolher.
+
 100. O que é `@Configuration` e `@Bean`?
+    R: O configuration apesar de ter um comportamento parecido com Bean, não tem o mesmo proposito. As configuration são inicializadas com ordem prioritaria em relacao ao Bean, nas configurações utilizamos inicialização de base de dados, informações de segurança que serão futuramente utilizadas pelos controllers, services e repository.
+
+    **[Parcial]** A ideia de que `@Configuration` é usada para configurações está correta, mas a explicação precisa de ajustes:
+    - **`@Configuration`**: marca uma classe como **fonte de definições de beans** via código Java (substitui o antigo XML de configuração). O Spring trata essa classe de forma especial usando CGLIB proxy para garantir que métodos `@Bean` retornem instâncias singleton.
+    - **`@Bean`**: marca um **método** dentro de uma `@Configuration` que retorna um objeto a ser gerenciado pelo Spring como bean. É útil quando você não tem controle sobre a classe (ex.: classes de bibliotecas externas).
+
+    ```java
+    @Configuration
+    public class AppConfig {
+        @Bean
+        public RestTemplate restTemplate() {
+            return new RestTemplate(); // este objeto agora é um bean gerenciado pelo Spring
+        }
+
+        @Bean
+        public ObjectMapper objectMapper() {
+            return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        }
+    }
+    ```
+    A diferença chave: `@Component` e derivados registram a **própria classe** como bean; `@Bean` registra o **retorno do método** como bean.
+
 101. Qual a diferença entre `@Primary` e `@Qualifier`?
+    R: Não sei
+
+    **[Não respondida]** Ambas resolvem a ambiguidade quando há múltiplos beans do mesmo tipo, mas de formas diferentes:
+    - **`@Primary`**: marca um bean como o **padrão** quando há múltiplas opções. É definido no bean e se aplica globalmente — sempre que houver ambiguidade, o bean `@Primary` será escolhido automaticamente.
+    - **`@Qualifier`**: escolhe um bean **específico por nome** no ponto de injeção. Tem **prioridade sobre** `@Primary`.
+
+    ```java
+    @Service
+    @Primary
+    public class EmailNotification implements NotificationService { ... }
+
+    @Service("sms")
+    public class SmsNotification implements NotificationService { ... }
+
+    // Aqui recebe EmailNotification (por ser @Primary)
+    public OrderService(NotificationService notification) { ... }
+
+    // Aqui recebe SmsNotification (o @Qualifier sobrepõe o @Primary)
+    public AlertService(@Qualifier("sms") NotificationService notification) { ... }
+    ```
+    Use `@Primary` para definir um padrão sensato e `@Qualifier` para exceções pontuais.
+
 102. O que é o ciclo de vida de um Bean no Spring?
+    R: Não sei, mas acredito que pode ter os seguintes estados: inicialização, estado de execução e encerramento.
+
+    **[Parcial]** A intuição está no caminho certo! O ciclo de vida de um bean tem mais etapas do que parece:
+    1. **Instanciação**: o container cria o objeto (via construtor).
+    2. **Injeção de dependências**: as propriedades e dependências são injetadas (`@Autowired`).
+    3. **Callbacks de inicialização** (nesta ordem):
+       - `@PostConstruct` — método executado após a injeção de dependências.
+       - `InitializingBean.afterPropertiesSet()` — interface do Spring.
+       - Método `initMethod` definido em `@Bean(initMethod = "init")`.
+    4. **Bean pronto para uso**: disponível no container para injeção e uso.
+    5. **Callbacks de destruição** (quando o container é fechado):
+       - `@PreDestroy` — método executado antes da destruição.
+       - `DisposableBean.destroy()` — interface do Spring.
+       - Método `destroyMethod` definido em `@Bean(destroyMethod = "cleanup")`.
+
+    Os mais usados no dia a dia são `@PostConstruct` (para lógica de inicialização como carregar cache) e `@PreDestroy` (para liberar recursos como fechar conexões).
 
 ## 11. API REST com Spring Boot
 
 103. Qual a diferença entre `@Controller` e `@RestController`?
+    R: Controller é a maneira de identificarmos que aquele Bean está numa camada de apresentação, já o @RestController é uma especializacão de um Controller com componentes que definem ele como REST, ou seja ele já possui integrações com padrões REST, isso é utilizado até para representar a documentação.
+
+    **[Parcial]** A ideia de especialização está correta, mas a diferença técnica é mais simples e precisa:
+    - **`@Controller`**: retorna o **nome de uma view** (página HTML) por padrão. Para retornar dados (JSON/XML), precisa anotar cada método com `@ResponseBody`.
+    - **`@RestController`**: é a combinação de `@Controller` + `@ResponseBody`. Todos os métodos retornam dados **serializados diretamente no corpo da resposta** (JSON por padrão), sem passar por um view resolver.
+
+    ```java
+    @Controller
+    public class PageController {
+        @GetMapping("/home")
+        public String home() { return "index"; } // retorna a view "index.html"
+    }
+
+    @RestController
+    public class ApiController {
+        @GetMapping("/api/users")
+        public List<User> getUsers() { return userService.findAll(); } // retorna JSON
+    }
+    ```
+
 104. O que são `@GetMapping`, `@PostMapping`, `@PutMapping` e `@DeleteMapping`?
+    R: GetMapping é a representação do Verbo GET, com ele a função que está descrita a seguir, é representada como GET. PostMapping representa o verbo POST, PutMapping representa o verbo PUT e o DELETE representa o verbo delete, dessa maneira o desenvolvedor não precisa especificar qual verbo será utilizado, como era usando antigamente com @RequestMapping.
+
+    **[Parcial]** A explicação está correta! Um esclarecimento: `@RequestMapping` **não foi substituído** — essas anotações são atalhos (composed annotations) para `@RequestMapping(method = RequestMethod.GET)`, etc. O `@RequestMapping` ainda é usado, principalmente **no nível da classe** para definir o path base:
+    ```java
+    @RestController
+    @RequestMapping("/api/users")  // path base — ainda usa @RequestMapping
+    public class UserController {
+        @GetMapping           // GET /api/users
+        @PostMapping          // POST /api/users
+        @GetMapping("/{id}")  // GET /api/users/{id}
+        @PutMapping("/{id}")  // PUT /api/users/{id}
+        @DeleteMapping("/{id}") // DELETE /api/users/{id}
+    }
+    ```
+    Cada anotação mapeia para o verbo HTTP correspondente, alinhado com as operações CRUD de uma API REST.
+
 105. Qual a diferença entre `@RequestParam`, `@PathVariable` e `@RequestBody`?
+    R: RequestParam é a anotação que representa o parametro no padrão REST, se definirmos um parametro com @RequestParam, ao receber uma requisição REST ele será apresentado a seguir uma interogação como mostra a seguir: api-url.com/v1/helloword?name=Yan desse modo, o parametro name terá o valor Yan. PathVariable, é representado como uma variavel no enderço da url como mostra abaixo: api-url.com/v1/helloword/names/1 neste caso estou utilizando a rota names, e o pathvariable é id representado pelo valor 1. e o request body, geralmente é utilizado para requisições que precisam enviar dados mais complexos, como estruturas de dados em json.
+
+    **[Correto]** Boa explicação com exemplos práticos! Para consolidar:
+    ```java
+    // @RequestParam — query string: /api/users?name=Yan&age=25
+    @GetMapping("/api/users")
+    public List<User> search(@RequestParam String name, @RequestParam(required = false) Integer age)
+
+    // @PathVariable — parte da URL: /api/users/1
+    @GetMapping("/api/users/{id}")
+    public User getById(@PathVariable Long id)
+
+    // @RequestBody — corpo da requisição (JSON → objeto Java)
+    @PostMapping("/api/users")
+    public User create(@RequestBody UserDTO dto)
+    ```
+    Complemento: `@RequestParam` é mais usado para **filtros e buscas**, `@PathVariable` para **identificar recursos**, e `@RequestBody` para **enviar dados complexos** (POST/PUT).
+
 106. Como fazer tratamento global de exceções com `@ControllerAdvice` e `@ExceptionHandler`?
+    R: Ao criar uma classe com a anotação @ControllerAdvice o spring entende que os métodos que serão criados ali serão para tratamento de execeção, porém para cada método que irá tratar uma exceção você deve utilizar a anotação exceptionHandler e definir qual exception você irá querer tratar, com isso você incluirá os parametros que será a propria exception e decidir o que será feito.
+    Pode criar: logs, modificar a resposta definindo um body especifico, escolher o status code, tudo isso através do Response Entity.
+
+    **[Correto]** Boa explicação! Para ilustrar com código:
+    ```java
+    @RestControllerAdvice
+    public class GlobalExceptionHandler {
+
+        @ExceptionHandler(UserNotFoundException.class)
+        public ResponseEntity<ErrorResponse> handleNotFound(UserNotFoundException ex) {
+            log.warn("Usuário não encontrado: {}", ex.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("NOT_FOUND", ex.getMessage()));
+        }
+
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
+            String errors = ex.getBindingResult().getFieldErrors().stream()
+                .map(e -> e.getField() + ": " + e.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+            return ResponseEntity.badRequest()
+                .body(new ErrorResponse("VALIDATION_ERROR", errors));
+        }
+    }
+    ```
+    Nota: `@RestControllerAdvice` = `@ControllerAdvice` + `@ResponseBody` (retorna JSON direto).
+
 107. O que é `ResponseEntity` e quando usar?
+    R: O responseEntity é uma classe genérica ResponseEntity<T> que através dela consegue produzir resposta em JSON e status code de acordo com o padrão REST.
+
+    **[Parcial]** A ideia está correta, mas `ResponseEntity` não produz apenas JSON — ele representa a **resposta HTTP completa**: status code, headers e body. É usado quando você precisa de **controle total** sobre a resposta:
+    ```java
+    @PostMapping("/users")
+    public ResponseEntity<User> create(@RequestBody UserDTO dto) {
+        User user = userService.save(dto);
+        URI location = URI.create("/api/users/" + user.getId());
+        return ResponseEntity
+            .created(location)        // status 201
+            .header("X-Custom", "valor") // headers customizados
+            .body(user);              // corpo da resposta
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        userService.delete(id);
+        return ResponseEntity.noContent().build(); // status 204, sem corpo
+    }
+    ```
+    Quando **não** precisa customizar status/headers, pode retornar o objeto diretamente (o Spring assume 200 OK).
+
 108. Como fazer validação de dados com Bean Validation (`@Valid`, `@NotNull`, `@Size`)?
+    R: Para utilizar Bean Validation você precisa criar uma classe com a anotação @entity, e ela deve ser usada no controler, desse modo o Spring consegue verificar cada campo da classe de acordo com as anotações que você utilizou, Você pode definir o campo como @notnull e com isso rejeitar a requisição do cliente se não enviar o campo.
+
+    **[Incorreto]** Bean Validation **não requer** `@Entity`! A anotação `@Entity` é do JPA e serve para mapear tabelas do banco. Para validação, você usa um **DTO** (ou qualquer classe) com anotações de validação e `@Valid` no controller:
+    ```java
+    // DTO com anotações de validação (NÃO precisa de @Entity)
+    public class UserDTO {
+        @NotNull(message = "Nome é obrigatório")
+        @Size(min = 2, max = 100, message = "Nome deve ter entre 2 e 100 caracteres")
+        private String name;
+
+        @Email(message = "Email inválido")
+        @NotBlank
+        private String email;
+
+        @Min(value = 18, message = "Idade mínima é 18")
+        private Integer age;
+    }
+
+    // Controller — o @Valid ativa a validação
+    @PostMapping("/users")
+    public ResponseEntity<User> create(@Valid @RequestBody UserDTO dto) { ... }
+    ```
+    Se a validação falhar, o Spring lança `MethodArgumentNotValidException` (status 400) automaticamente. Para customizar a resposta de erro, use `@ControllerAdvice`.
+
 109. O que é HATEOAS?
+    R: não sei
+
+    **[Não respondida]** HATEOAS (Hypermedia As The Engine Of Application State) é um princípio REST onde a API retorna **links de navegação** junto com os dados, permitindo que o cliente descubra dinamicamente as ações disponíveis:
+    ```json
+    {
+        "id": 1,
+        "name": "Yan",
+        "email": "yan@email.com",
+        "_links": {
+            "self": { "href": "/api/users/1" },
+            "update": { "href": "/api/users/1" },
+            "delete": { "href": "/api/users/1" },
+            "all-users": { "href": "/api/users" }
+        }
+    }
+    ```
+    Com Spring, usa-se o módulo `spring-boot-starter-hateoas` e classes como `EntityModel` e `WebMvcLinkBuilder`. Na prática, nem todas as APIs REST implementam HATEOAS — ele é mais utilizado em APIs públicas que precisam ser auto-descritivas.
+
 110. Como versionar uma API REST?
+    R: essa é uma pergunta muito subjetiva, por que existem muitas maneira de versionar uma API REST, seja via relase, ou via controller.
+    Pensando no contexto de spring, podemos versionar uma API utilizando o @ResquestMapping("v1/users") e definir o numero da versão, mas há quem diga que podemos também deixa tudo num controller e criar metodos com versões diferentes. Vai da interpretação de cada um.
+
+    **[Parcial]** Você tem razão que existem várias abordagens, e a via URL é a mais comum. Mas existem 4 estratégias principais com prós e contras:
+    1. **Via URL (path)**: `GET /api/v1/users` — mais comum e visível. Fácil de entender e cachear.
+    2. **Via query parameter**: `GET /api/users?version=1` — flexível mas menos padronizado.
+    3. **Via header customizado**: `X-API-Version: 1` — não polui a URL mas é menos visível.
+    4. **Via content negotiation (Accept header)**: `Accept: application/vnd.api.v1+json` — mais RESTful mas mais complexo.
+
+    No Spring, a forma mais usada:
+    ```java
+    @RestController
+    @RequestMapping("/api/v1/users")
+    public class UserControllerV1 { ... }
+
+    @RestController
+    @RequestMapping("/api/v2/users")
+    public class UserControllerV2 { ... }
+    ```
+
 111. O que é o Swagger/OpenAPI e como integrar com Spring Boot?
+    R: Swagger é uma interface que utiliza da OpenAPI (padrão de documentação de código de REST API) para documentar o projeto e ele tem alto integração com Springboot através do springdoc.
+
+    **[Parcial]** A relação Swagger/OpenAPI está correta! Complementando:
+    - **OpenAPI**: é a **especificação** (padrão) que define como documentar APIs REST em formato JSON/YAML.
+    - **Swagger**: é o conjunto de **ferramentas** que implementam a especificação (Swagger UI para visualização, Swagger Editor, Swagger Codegen).
+
+    Para integrar com Spring Boot, adicione a dependência do `springdoc-openapi`:
+    ```xml
+    <dependency>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        <version>2.x.x</version>
+    </dependency>
+    ```
+    Com isso, automaticamente:
+    - A documentação fica disponível em `/v3/api-docs` (JSON)
+    - A interface Swagger UI fica em `/swagger-ui.html`
+
+    Pode customizar com anotações como `@Operation`, `@ApiResponse`, `@Tag` nos controllers.
 
 ## 12. Spring Security
 
 112. O que é o Spring Security e como funciona o filtro de segurança?
+    R: o Spring Security é o modulo de seguranção do Spring, nele você pode criar servidores de autenticacao, clientes de authorização. Além disso, ele possui um comportamento baseado em filters, da maneira que cada filtro é responsavel por uma etapa de segurança, como validação de acesso ao método, validação de crendenciais, e por ai vai. Além disso você ainda pode criar filtros personalizados para complentar o seu modelo.
+
+    **[Parcial]** A explicação está no caminho certo! Complementando com mais precisão:
+    - O Spring Security funciona através de uma **FilterChain** (cadeia de filtros Servlet) chamada `SecurityFilterChain`. Cada requisição HTTP passa por uma série de filtros em ordem, sendo os principais:
+      - `SecurityContextPersistenceFilter`: carrega/salva o contexto de segurança.
+      - `UsernamePasswordAuthenticationFilter`: processa login com usuário/senha.
+      - `BasicAuthenticationFilter`: processa autenticação Basic.
+      - `ExceptionTranslationFilter`: converte exceções de segurança em respostas HTTP (401, 403).
+      - `FilterSecurityInterceptor`/`AuthorizationFilter`: verifica se o usuário tem permissão para acessar o recurso.
+    - Você pode adicionar filtros customizados com `addFilterBefore()` / `addFilterAfter()` na configuração da `SecurityFilterChain`.
+    - A configuração moderna usa `SecurityFilterChain` como bean:
+    ```java
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http.authorizeHttpRequests(auth -> auth
+            .requestMatchers("/public/**").permitAll()
+            .anyRequest().authenticated()
+        ).build();
+    }
+    ```
+
 113. Qual a diferença entre autenticação e autorização?
+    R: Autenticação é garantir que aquela requisição possui as credencias validas para acessar aquele recurso. Já autorização corresponde a validação a nivel de acesso, por exemplo, você pode categoria suas requisiçÕes a fim de que só administradores possam acessar aquele endpoint, ou remover qualquer autorização para acessar um endpoint publico.
+
+    **[Parcial]** A ideia está correta, mas a definição de autenticação precisa de um ajuste — autenticação não é sobre "acessar aquele recurso" (isso é autorização). São conceitos distintos:
+    - **Autenticação** (Authentication — "quem é você?"): é o processo de **verificar a identidade** do usuário. Valida se as credenciais (usuário/senha, token, certificado) são válidas. Responde: **"Você é quem diz ser?"**
+    - **Autorização** (Authorization — "o que você pode fazer?"): é o processo de **verificar permissões** após o usuário já estar autenticado. Responde: **"Você tem permissão para acessar este recurso?"**
+
+    Fluxo: Autenticação → Autorização (primeiro identifica, depois verifica permissões).
+
+    No Spring Security: autenticação é feita por `AuthenticationManager`/`AuthenticationProvider`; autorização é feita por `@PreAuthorize`, `@Secured`, ou regras no `SecurityFilterChain`.
+
 114. O que é JWT (JSON Web Token) e como implementar com Spring Security?
+    R: JWT é uma maneira de criptrografar dados de uma maneira segura e possibilitando a validação de que aquele token você gerado por uma origem válida. para implementar JWT é necessário utilizar alguns pacotes do spring secutiry. não me lembro de cabeça quais são.
+
+    **[Parcial]** JWT **não criptografa** dados por padrão — ele **assina** os dados. Qualquer pessoa pode decodificar o payload de um JWT (é Base64), mas não pode alterá-lo sem invalidar a assinatura. Estrutura do JWT:
+    - **Header**: algoritmo de assinatura (ex.: HS256, RS256) e tipo (JWT).
+    - **Payload**: claims (dados) como `sub` (subject/usuário), `exp` (expiração), `roles`, etc.
+    - **Signature**: assinatura gerada com uma chave secreta para garantir integridade.
+
+    Formato: `xxxxx.yyyyy.zzzzz` (header.payload.signature)
+
+    Para implementar com Spring Security:
+    1. Adicione as dependências: `spring-boot-starter-security` + uma biblioteca JWT como `jjwt` (io.jsonwebtoken) ou `spring-boot-starter-oauth2-resource-server`.
+    2. Crie um filtro customizado que extrai o token do header `Authorization: Bearer <token>`, valida a assinatura e carrega o usuário no `SecurityContext`.
+    3. Registre o filtro na `SecurityFilterChain` com `addFilterBefore()`.
+
+    Com `spring-boot-starter-oauth2-resource-server`, boa parte dessa configuração já vem pronta.
+
 115. O que são `@PreAuthorize` e `@Secured`?
+    R: Não lembro
+
+    **[Não respondida]** São anotações para controle de **autorização a nível de método**:
+    - **`@Secured`**: forma mais simples, aceita apenas nomes de roles (papéis):
+    ```java
+    @Secured("ROLE_ADMIN")
+    public void deleteUser(Long id) { ... }
+
+    @Secured({"ROLE_ADMIN", "ROLE_MANAGER"})
+    public void updateUser(UserDTO dto) { ... }
+    ```
+    - **`@PreAuthorize`**: mais poderosa, aceita **expressões SpEL** (Spring Expression Language), permitindo lógica complexa:
+    ```java
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteUser(Long id) { ... }
+
+    @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
+    public User getUser(@Param("userId") Long userId) { ... }
+
+    @PreAuthorize("@securityService.canAccess(#id)")
+    public Order getOrder(Long id) { ... }
+    ```
+    Para habilitá-las, é necessário usar `@EnableMethodSecurity` na classe de configuração. `@PreAuthorize` é a mais recomendada por ser mais flexível.
+
 116. Como configurar CORS no Spring Boot?
+    R: Você pode utilizar uma classe com anotação @Configuration e implementar uma classe especifica do Spring Security, com isso você irá precisar implementar o método que configura o CORS.
+
+    **[Parcial]** A ideia está correta, mas existem diferentes formas de configurar CORS:
+    1. **Globalmente via `WebMvcConfigurer`** (sem Spring Security):
+    ```java
+    @Configuration
+    public class WebConfig implements WebMvcConfigurer {
+        @Override
+        public void addCorsMappings(CorsRegistry registry) {
+            registry.addMapping("/api/**")
+                .allowedOrigins("https://meusite.com")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*");
+        }
+    }
+    ```
+    2. **Via Spring Security** (quando o Security está no projeto, é necessário configurar nele também):
+    ```java
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http.cors(cors -> cors.configurationSource(request -> {
+            CorsConfiguration config = new CorsConfiguration();
+            config.setAllowedOrigins(List.of("https://meusite.com"));
+            config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+            return config;
+        })).build();
+    }
+    ```
+    3. **Por controller** com `@CrossOrigin`:
+    ```java
+    @CrossOrigin(origins = "https://meusite.com")
+    @RestController
+    public class UserController { ... }
+    ```
+
 117. O que é OAuth2 e como integrar com Spring Security?
+    R: OAuth2 é uma RFC de segurança que você traduz a autenticação do seu usuário através de um Bearer Token,
+
+    **[Parcial]** A resposta ficou incompleta. OAuth2 é um **protocolo de autorização** (não de autenticação) que permite que um aplicativo acesse recursos de um usuário **sem precisar das credenciais dele**. Funciona com diferentes papéis:
+    - **Resource Owner**: o usuário dono dos dados.
+    - **Client**: a aplicação que quer acessar os dados.
+    - **Authorization Server**: emite tokens (ex.: Keycloak, Auth0, Google).
+    - **Resource Server**: a API que protege os recursos.
+
+    Fluxos (grant types) principais:
+    - **Authorization Code**: mais seguro, usado em aplicações web (redireciona o usuário para login no Authorization Server).
+    - **Client Credentials**: comunicação entre serviços (machine-to-machine), sem usuário envolvido.
+
+    No Spring Boot, a integração é feita com:
+    - `spring-boot-starter-oauth2-client` — para aplicações que consomem recursos protegidos.
+    - `spring-boot-starter-oauth2-resource-server` — para APIs que validam tokens JWT.
+    - `spring-authorization-server` — para criar seu próprio servidor de autorização.
+
+    O Bearer Token que você mencionou é o **formato do token** usado no header `Authorization: Bearer <token>`, mas OAuth2 é o protocolo completo que define como esse token é obtido e validado.
 
 ## 13. Spring Boot Avançado
 
 118. O que é Spring AOP (Aspect-Oriented Programming) e quando usar?
+    R: O Aspect tem uma similaridade com os filtes,com Spring AOP, você pode criar anotações e com elas definir meios de pre processar ou pós processar a execução de um método, por exemplo. Podemos criar anotações para definir métricas de procesamento.
+    Se criarmos anotação @Measurable e definirmos regras de processamento podemos armazenar o timestamp inicial de quando aquele método foi chamado e ao fim do metodo retornar ao stack anterior e calcular o tempo total de processamento. Com isso é necessário implementar como o AOP vai se comportar, ele pode ser antes ou depois da execução do metodo.
+
+    **[Parcial]** O exemplo de métricas com `@Measurable` é excelente e demonstra bem o conceito! Complementando com a terminologia e os tipos de advice:
+    - **AOP** é um paradigma que permite separar **preocupações transversais** (cross-cutting concerns) do código de negócio — como logging, métricas, segurança e transações.
+    - Conceitos-chave:
+      - **Aspect**: a classe que contém a lógica transversal (anotada com `@Aspect`).
+      - **Advice**: o código que será executado. Tipos:
+        - `@Before`: executa **antes** do método.
+        - `@After`: executa **após** o método (sempre, com sucesso ou erro).
+        - `@AfterReturning`: executa só quando o método **retorna com sucesso**.
+        - `@AfterThrowing`: executa só quando o método **lança exceção**.
+        - `@Around`: envolve o método inteiro (antes + depois), o mais poderoso.
+      - **Pointcut**: define **quais métodos** serão interceptados (via expressão).
+
+    ```java
+    @Aspect
+    @Component
+    public class PerformanceAspect {
+        @Around("@annotation(Measurable)")
+        public Object measureTime(ProceedingJoinPoint joinPoint) throws Throwable {
+            long start = System.currentTimeMillis();
+            Object result = joinPoint.proceed(); // executa o método original
+            long duration = System.currentTimeMillis() - start;
+            log.info("{} executou em {}ms", joinPoint.getSignature(), duration);
+            return result;
+        }
+    }
+    ```
+    Casos de uso comuns: logging, auditoria, métricas, cache, controle de transações (`@Transactional` usa AOP internamente).
+
 119. O que são Profiles no Spring Boot e como usá-los?
+    R: você pode criar diferentes arquivos application.properties e definir configuraçÕes com valores diferentes para term profiles diferentes.
+
+    **[Parcial]** A ideia está correta, mas faltou detalhar as formas de uso. Profiles permitem ter **configurações diferentes por ambiente** (dev, staging, prod):
+    - **Arquivos de configuração**: `application-dev.properties`, `application-prod.properties` (como você mencionou).
+    - **Ativação**:
+      - `application.properties`: `spring.profiles.active=dev`
+      - Linha de comando: `--spring.profiles.active=dev`
+      - Variável de ambiente: `SPRING_PROFILES_ACTIVE=dev`
+    - **Beans condicionais**: ativar beans específicos por profile:
+    ```java
+    @Configuration
+    @Profile("dev")
+    public class DevConfig {
+        @Bean
+        public DataSource dataSource() { ... } // H2 em memória
+    }
+
+    @Configuration
+    @Profile("prod")
+    public class ProdConfig {
+        @Bean
+        public DataSource dataSource() { ... } // PostgreSQL
+    }
+    ```
+    - Múltiplos profiles podem ser ativados simultaneamente: `spring.profiles.active=dev,metrics`.
+
 120. O que é o Spring Actuator e quais endpoints ele expõe?
+    R: Spring Actuator serve para coletar e apresentar dados relacionados a aplicações Spring, com ele você pode consultar se sua aplicação está saudavel através do endpoint "/health", é possivel também capturar o arquivo OpenAPI, se utilizarmos métricas com prometheus, podermos acessar o endpoint de "/metrics"
+
+    **[Parcial]** A ideia está correta! Uma correção: o endpoint OpenAPI não é do Actuator (é do springdoc). Os principais endpoints do Actuator são:
+    - `/actuator/health` — status de saúde da aplicação (UP/DOWN) e dos componentes (banco, disco, etc.).
+    - `/actuator/info` — informações sobre a aplicação (versão, descrição).
+    - `/actuator/metrics` — métricas da JVM, HTTP, conexões, etc. Integra com Prometheus via `/actuator/prometheus`.
+    - `/actuator/env` — variáveis de ambiente e propriedades de configuração.
+    - `/actuator/beans` — lista todos os beans registrados no container.
+    - `/actuator/loggers` — permite consultar e **alterar o nível de log em tempo de execução**.
+    - `/actuator/mappings` — lista todos os endpoints mapeados.
+    - `/actuator/threaddump` — dump das threads da JVM.
+
+    Por segurança, apenas `/health` vem exposto por padrão. Para expor outros: `management.endpoints.web.exposure.include=health,info,metrics`.
+
 121. Como criar um starter customizado no Spring Boot?
+    R: Eu só sei criar um starter com maven e para isso você pode definir o tipo dele como pom e importar no seu projeto.
+
+    **[Parcial]** A parte do Maven está certa, mas um starter customizado vai além de um POM de dependências. Os passos são:
+    1. **Módulo autoconfigure**: crie um projeto com a lógica de auto-configuração:
+    ```java
+    @Configuration
+    @ConditionalOnClass(MyService.class)
+    @EnableConfigurationProperties(MyStarterProperties.class)
+    public class MyStarterAutoConfiguration {
+        @Bean
+        @ConditionalOnMissingBean
+        public MyService myService(MyStarterProperties props) {
+            return new MyService(props.getUrl(), props.getTimeout());
+        }
+    }
+    ```
+    2. **Registrar a auto-configuração**: crie o arquivo `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` e adicione a classe.
+    3. **Módulo starter** (POM): crie um projeto que apenas agrupa as dependências (o autoconfigure + bibliotecas necessárias).
+    4. **Properties customizáveis**: use `@ConfigurationProperties` para permitir configuração via `application.properties`:
+    ```properties
+    my-starter.url=https://api.example.com
+    my-starter.timeout=5000
+    ```
+    Convenção de nomes: `minha-empresa-spring-boot-starter` (starters de terceiros não usam o prefixo `spring-boot-starter-`).
+
 122. O que é o padrão Circuit Breaker e como implementar com Resilience4j?
+    R: o Circuit Breaker, é uma maneira segura de lidar em situaçÕes de caos, por exemplo quando uma integração falha, se você tentar reprocessar de acordo com a sua demanda, você pode sobrecarregar sua aplicação e não só isso, mas quando a integração retornar, você pode exceder a quantidade de requisições e acabar sendo bloqueado.
+    Dessa maneira, o Cirtuit Breaker, identifica essa falha na integração e segura as requisições recebidas pela origem e de tempos em tempos verifica se a integração retornou, quando isso acontecer o circuito é religado e podemos começar a enviar as requisições de maneira gradual.
+
+    **[Parcial]** Excelente raciocínio sobre o problema e a solução! Complementando com os estados formais do Circuit Breaker:
+    - **CLOSED** (fechado — funcionamento normal): as requisições passam normalmente. Se a taxa de falhas ultrapassa um limiar configurado, o circuito **abre**.
+    - **OPEN** (aberto — bloqueando): as requisições são **rejeitadas imediatamente** (fail-fast), sem tentar chamar o serviço. Retorna um fallback ou erro. Após um tempo configurado, vai para half-open.
+    - **HALF-OPEN** (semi-aberto — testando): permite um número limitado de requisições de teste. Se elas tiverem sucesso, o circuito **fecha**. Se falharem, **abre** novamente.
+
+    Com Resilience4j no Spring Boot:
+    ```java
+    @CircuitBreaker(name = "paymentService", fallbackMethod = "paymentFallback")
+    public PaymentResponse processPayment(PaymentRequest request) {
+        return paymentClient.process(request);
+    }
+
+    public PaymentResponse paymentFallback(PaymentRequest request, Exception ex) {
+        return new PaymentResponse("PENDING", "Serviço indisponível, tente novamente.");
+    }
+    ```
+    Configuração em `application.yml`:
+    ```yaml
+    resilience4j.circuitbreaker.instances.paymentService:
+      failure-rate-threshold: 50        # abre se 50% das chamadas falharem
+      wait-duration-in-open-state: 30s  # tempo no estado OPEN antes de testar
+      sliding-window-size: 10           # avalia as últimas 10 chamadas
+    ```
+
 123. Qual a diferença entre comunicação síncrona e assíncrona entre microservices?
+    R: Comunicação sincrona é uma comunicação que aguarda a resposta até ter o resultado final, utilzando REST quando fazemos uma requisição HTTP, só é concluido com sucesso quando recebemos uma resposta do microserviço.
+    No caso de Comunicação assincrona, é quando enviamos eventos e não aguardamos por uma resposta, como mensagem em filas ou kafka.
+    Podemos ter a confirmação que a mensagem foi enviada, mas para termos uma resposta, mesmo que imediata, precisamos ter um consumidor, ou realizar a chamada em outro endpoint para fazer se o processo foi concluido (pooling)
+
+    **[Correto]** Ótima resposta! Cobriu bem os conceitos, inclusive o detalhe do polling para verificar o resultado. Só um complemento para consolidar:
+    - **Síncrona**: REST (HTTP), gRPC. O chamador **bloqueia** esperando a resposta. Mais simples, mas gera **acoplamento temporal** (se o serviço destino estiver fora, a requisição falha).
+    - **Assíncrona**: filas (RabbitMQ, SQS), streaming (Kafka). O chamador **não bloqueia**. Gera **desacoplamento temporal** (o serviço destino pode processar depois). Mais resiliente, mas mais complexo de implementar e debugar.
+    - Nota: a palavra correta é **polling** (com uma letra "o") — verificação periódica.
+
 124. O que é Spring Cloud e quais são seus principais módulos?
+    R: Spring Cloud, tem diversos módulos e os que eu conheço é Spring Feign Client, que é um módulo que é utilizado para integração com outras API, ele facilita na construção de classe que integram com outras API de maneira facil e sucinta.
+
+    **[Parcial]** O Feign Client está correto! Mas o Spring Cloud tem um ecossistema muito maior voltado para **arquitetura de microservices**:
+    - **Spring Cloud OpenFeign**: cliente HTTP declarativo (como você mencionou).
+    - **Spring Cloud Gateway**: API Gateway para roteamento, rate limiting e filtros.
+    - **Spring Cloud Config**: servidor centralizado de configurações (externaliza `application.properties`).
+    - **Spring Cloud Netflix Eureka**: service discovery — serviços se registram e se descobrem automaticamente.
+    - **Spring Cloud CircuitBreaker**: abstração para Circuit Breaker (Resilience4j).
+    - **Spring Cloud Sleuth / Micrometer Tracing**: distributed tracing para rastrear requisições entre serviços.
+    - **Spring Cloud Stream**: abstração para mensageria (Kafka, RabbitMQ).
+    - **Spring Cloud LoadBalancer**: balanceamento de carga client-side.
+
+    Exemplo do Feign Client para referência:
+    ```java
+    @FeignClient(name = "payment-service", url = "${payment.service.url}")
+    public interface PaymentClient {
+        @PostMapping("/api/payments")
+        PaymentResponse process(@RequestBody PaymentRequest request);
+    }
+    ```
+
 125. Como funciona o `@Async` no Spring?
+    R: Podemos escrever um método @Async que executa sem travar a thread principal.
+
+    **[Parcial]** A ideia está correta, mas faltaram detalhes importantes:
+    - `@Async` faz o método ser executado em uma **thread separada** do pool de threads do Spring.
+    - Para funcionar, é obrigatório ativar com `@EnableAsync` em uma classe `@Configuration`.
+    - O método pode retornar `void` (fire-and-forget) ou `CompletableFuture<T>` (quando o resultado é necessário depois).
+    - **Limitação importante**: `@Async` **não funciona** se chamado de dentro da mesma classe (pois o Spring usa proxy AOP — a chamada interna não passa pelo proxy).
+
+    ```java
+    @Configuration
+    @EnableAsync
+    public class AsyncConfig { }
+
+    @Service
+    public class EmailService {
+        @Async
+        public void sendEmail(String to, String body) {
+            // executa em outra thread — não bloqueia o chamador
+        }
+
+        @Async
+        public CompletableFuture<ReportDTO> generateReport(Long userId) {
+            ReportDTO report = // processamento demorado...
+            return CompletableFuture.completedFuture(report);
+        }
+    }
+    ```
+    Pode customizar o pool de threads definindo um bean `Executor` com `@Bean("taskExecutor")`.
+
 126. O que é o `@Transactional` e como funciona a propagação de transações?
+    R: O @Transaction serve para garantir que aquele método será executa até o fim, caso haja alguma falha, aquele processo é retrocedido defazendo o que foi durante a execução.
+
+    **[Parcial]** A ideia de rollback em caso de falha está correta! Mas faltou explicar a **propagação**, que é uma parte importante da pergunta:
+    - `@Transactional` garante que todas as operações de banco dentro do método fazem parte de uma **transação atômica** — ou tudo é commitado, ou tudo sofre rollback.
+    - **Atenção**: por padrão, o rollback acontece apenas para **exceções unchecked** (`RuntimeException`). Para checked exceptions, é preciso configurar: `@Transactional(rollbackFor = Exception.class)`.
+    - **Propagação** define o comportamento quando um método transacional chama outro:
+      - `REQUIRED` (padrão): usa a transação existente ou cria uma nova se não houver.
+      - `REQUIRES_NEW`: **sempre** cria uma nova transação, suspendendo a atual.
+      - `MANDATORY`: exige que já exista uma transação, senão lança exceção.
+      - `SUPPORTS`: usa a transação existente se houver, senão executa sem transação.
+      - `NOT_SUPPORTED`: suspende a transação atual e executa sem transação.
+      - `NEVER`: lança exceção se houver uma transação ativa.
+
+    ```java
+    @Transactional
+    public void transferMoney(Long from, Long to, BigDecimal amount) {
+        accountRepo.debit(from, amount);   // se falhar aqui...
+        accountRepo.credit(to, amount);    // ...o debit é desfeito (rollback)
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void saveAuditLog(String action) {
+        // salva em transação independente — persiste mesmo se a transação pai falhar
+    }
+    ```
+
 127. O que é o Spring Scheduler (`@Scheduled`)?
+    R: serve para definirmos tarefas programveis, com isso podemos escrever tarefas rotineiras, que executam a cada hora, ou a cada minuto...
+
+    **[Parcial]** A ideia está correta! Complementando com detalhes de uso:
+    - Para funcionar, é obrigatório ativar com `@EnableScheduling`.
+    - Três formas de agendar:
+      - **fixedRate**: executa a cada X milissegundos (independente do tempo de execução do método anterior).
+      - **fixedDelay**: espera X milissegundos **após o término** da execução anterior.
+      - **cron**: expressão cron para agendamentos complexos.
+
+    ```java
+    @Configuration
+    @EnableScheduling
+    public class SchedulerConfig { }
+
+    @Component
+    public class ScheduledTasks {
+        @Scheduled(fixedRate = 60000)  // a cada 1 minuto
+        public void checkHealth() { ... }
+
+        @Scheduled(fixedDelay = 30000) // 30s após o término da execução anterior
+        public void processQueue() { ... }
+
+        @Scheduled(cron = "0 0 2 * * *") // todo dia às 2h da manhã
+        public void dailyCleanup() { ... }
+    }
+    ```
+    **Atenção**: por padrão, o scheduler usa uma **thread única**. Para tarefas paralelas, configure um `TaskScheduler` com pool de threads.
 
 ---
 
