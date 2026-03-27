@@ -55,6 +55,32 @@ Ao revisar as respostas do usuário, as correções devem ser didáticas e bem e
 
 Manter a resposta original do usuário e adicionar a correção/complemento logo abaixo.
 
+## Docusaurus (Website)
+
+O projeto usa [Docusaurus](https://docusaurus.io/) para visualização e navegação das perguntas. Os arquivos do site ficam em `website/`.
+
+### Comandos
+
+```bash
+cd website
+npm install        # instalar dependências
+npm run start      # servidor de desenvolvimento (localhost:3000)
+npm run build      # build de produção
+npm run serve      # servir build localmente
+```
+
+### Estrutura do site
+
+Os docs em `website/docs/` são gerados a partir de `entrevista-java/` e agrupados por categoria:
+- `java-core/` — Seções 1-8
+- `spring-boot/` — Seções 9-13
+- `jpa-hibernate/` — Seções 14-18
+- `sql-bancos-dados/` — Seções 19-20
+- `ferramentas/` — Seções 21-22
+- `praticas-profissionais/` — Seções 23-25
+
+O formato Markdown é configurado como `md` (não MDX) para compatibilidade com generics Java (`<T>`, `ResponseEntity<T>`, etc.).
+
 ## Sistema de Build
 
-Nenhum sistema de build (Maven/Gradle) configurado ainda. Quando adicionado, atualizar esta seção com os comandos de build, teste e execução.
+Nenhum sistema de build Java (Maven/Gradle) configurado ainda. Quando adicionado, atualizar esta seção com os comandos de build, teste e execução.
