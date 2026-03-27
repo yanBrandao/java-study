@@ -32,10 +32,11 @@ const config: Config = {
       'classic',
       {
         docs: {
+          path: '../entrevista-java',
           sidebarPath: './sidebars.ts',
           routeBasePath: '/',
           editUrl:
-            'https://github.com/yanBrandao/java-study/tree/main/website/',
+            'https://github.com/yanBrandao/java-study/tree/main/',
         },
         blog: false,
         theme: {
