@@ -32,9 +32,9 @@ jobs:
         working-directory: website
         run: npm ci
 
-      - name: Build do Docusaurus com TinaCMS
+      - name: Build do Docusaurus
         working-directory: website
-        run: npm run build:local
+        run: npm run build
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5

@@ -12,10 +12,10 @@ Repositório com perguntas e material de estudo para entrevistas técnicas de Ja
 
 ## Estrutura do Projeto
 
-As perguntas ficam em `website/entrevista-java/` (fonte única de verdade), organizadas por categoria. O Docusaurus e o TinaCMS leem diretamente desta pasta.
+As perguntas ficam em `entrevista-java/` (fonte única de verdade), organizadas por categoria. O Docusaurus lê diretamente desta pasta — **não existe duplicação**.
 
 ```
-website/entrevista-java/
+entrevista-java/
 ├── intro.md                                # Página inicial do site
 ├── java-core/                              # Java Core (seções 1-8)
 │   ├── _category_.json
@@ -54,17 +54,15 @@ O projeto usa [Docusaurus](https://docusaurus.io/) para visualização e navega�
 
 ```bash
 cd website
-npm install              # instalar dependências
-npm run start            # servidor de desenvolvimento com TinaCMS (localhost:3000, admin em /admin)
-npm run start:docusaurus # servidor sem TinaCMS
-npm run build:local      # build local (sem TinaCloud)
-npm run build            # build de produção (requer TinaCloud)
-npm run serve            # servir build localmente
+npm install        # instalar dependências
+npm run start      # servidor de desenvolvimento (localhost:3000)
+npm run build      # build de produção
+npm run serve      # servir build localmente
 ```
 
 ### Fonte única
 
-O Docusaurus lê diretamente de `website/entrevista-java/` (configurado via `docs.path: 'entrevista-java'`). O TinaCMS também aponta para esta mesma pasta. Edite apenas os arquivos em `website/entrevista-java/`.
+O Docusaurus lê diretamente de `entrevista-java/` (configurado via `docs.path: '../entrevista-java'`). Não existe pasta `website/docs/` — edite apenas os arquivos em `entrevista-java/`.
 
 O `npm run start` faz **live reload**: qualquer alteração nos arquivos `.md` recarrega a página automaticamente.
 
