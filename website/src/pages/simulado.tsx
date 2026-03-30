@@ -7,7 +7,12 @@ import { gerarSimuladoPDF } from '../utils/gerarSimulado';
 import styles from './simulado.module.css';
 
 export default function SimuladoPage(): React.JSX.Element {
-  const data = usePluginData('questions-plugin') as QuestionsData;
+  const rawData = usePluginData('questions-plugin') as QuestionsData;
+  const data = useMemo(() => ({
+    ...rawData,
+    questions: rawData.questions.filter((q) => q.hasAnswer),
+    totalQuestions: rawData.questions.filter((q) => q.hasAnswer).length,
+  }), [rawData]);
   const [quantidade, setQuantidade] = useState(20);
   const [gerando, setGerando] = useState(false);
   const [categoriasAtivas, setCategoriasAtivas] = useState<Set<string>>(() => {

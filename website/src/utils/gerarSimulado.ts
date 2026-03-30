@@ -1,38 +1,222 @@
 import type { Question } from '../types/questions';
 
-function limparMarkdown(texto: string): string {
-  return texto
-    // Remover blocos de código (manter conteúdo)
-    .replace(/```[\w]*\n([\s\S]*?)```/g, (_match, code) => code.trim())
-    // Remover backticks inline
-    .replace(/`([^`]+)`/g, '$1')
-    // Converter bold
-    .replace(/\*\*([^*]+)\*\*/g, '$1')
-    // Converter itálico
-    .replace(/\*([^*]+)\*/g, '$1')
-    // Remover tags de avaliação
-    .replace(/\*\*\[(Correto|Parcial|Incorreto|Não respondida)\]\*\*/g, '[$1]')
-    // Limpar linhas de tabela markdown
-    .replace(/\|[-:]+\|[-:|\s]+\|/g, '')
-    // Remover pipes de tabela mas manter conteúdo
-    .replace(/^\|(.+)\|$/gm, (_match, content) =>
-      content.split('|').map((c: string) => c.trim()).filter(Boolean).join('  |  ')
-    )
-    // Remover headers R:
-    .replace(/^R:\s*/gm, '')
-    // Remover linhas vazias extras
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
+type PdfContent = any;
+
+/**
+ * Converte texto inline com **bold**, *italic* e `code` em array pdfmake.
+ */
+function parseInline(texto: string): PdfContent[] {
+  const resultado: PdfContent[] = [];
+  // Regex para capturar: **bold**, *italic*, `code`
+  const regex = /(\*\*(.+?)\*\*|\*(.+?)\*|`([^`]+)`)/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = regex.exec(texto)) !== null) {
+    // Texto antes do match
+    if (match.index > lastIndex) {
+      resultado.push({ text: texto.slice(lastIndex, match.index) });
+    }
+
+    if (match[2]) {
+      // **bold**
+      resultado.push({ text: match[2], bold: true });
+    } else if (match[3]) {
+      // *italic*
+      resultado.push({ text: match[3], italics: true });
+    } else if (match[4]) {
+      // `code`
+      resultado.push({
+        text: match[4],
+        font: 'Courier',
+        fontSize: 9,
+        background: '#f0f0f0',
+        color: '#c7254e',
+      });
+    }
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < texto.length) {
+    resultado.push({ text: texto.slice(lastIndex) });
+  }
+
+  return resultado.length > 0 ? resultado : [{ text: texto }];
+}
+
+/**
+ * Converte markdown da resposta em conteúdo pdfmake estilizado.
+ */
+function markdownParaPdf(markdown: string): PdfContent[] {
+  const conteudo: PdfContent[] = [];
+  const linhas = markdown.split('\n');
+  let i = 0;
+
+  while (i < linhas.length) {
+    const linha = linhas[i];
+
+    // Ignorar tags de avaliação [Correto], [Parcial], etc.
+    if (/^\*\*\[(Correto|Parcial|Incorreto|Não respondida)\]\*\*/.test(linha.trim())) {
+      i++;
+      continue;
+    }
+
+    // Remover prefixo R: da primeira linha
+    const linhaSemR = linha.replace(/^R:\s*/, '');
+
+    // Bloco de código ```
+    if (linhaSemR.trim().startsWith('```')) {
+      const codeLines: string[] = [];
+      i++; // pular a linha ```
+      while (i < linhas.length && !linhas[i].trim().startsWith('```')) {
+        codeLines.push(linhas[i]);
+        i++;
+      }
+      i++; // pular o ``` de fechamento
+
+      if (codeLines.length > 0) {
+        conteudo.push({
+          table: {
+            widths: ['*'],
+            body: [[{
+              text: codeLines.join('\n'),
+              font: 'Courier',
+              fontSize: 8.5,
+              lineHeight: 1.3,
+              color: '#1a1a2e',
+              margin: [8, 8, 8, 8],
+            }]],
+          },
+          layout: {
+            fillColor: () => '#f6f8fa',
+            hLineWidth: () => 0.5,
+            vLineWidth: () => 0.5,
+            hLineColor: () => '#e1e4e8',
+            vLineColor: () => '#e1e4e8',
+            paddingLeft: () => 0,
+            paddingRight: () => 0,
+            paddingTop: () => 0,
+            paddingBottom: () => 0,
+          },
+          margin: [0, 4, 0, 6],
+        });
+        continue;
+      }
+    }
+
+    // Tabela markdown (linhas com |)
+    if (linhaSemR.trim().startsWith('|') && linhaSemR.trim().endsWith('|')) {
+      const tabelaLinhas: string[][] = [];
+      while (i < linhas.length && linhas[i].trim().startsWith('|') && linhas[i].trim().endsWith('|')) {
+        const raw = linhas[i].trim();
+        // Ignorar linha separadora (|---|---|)
+        if (/^\|[-:\s|]+\|$/.test(raw)) {
+          i++;
+          continue;
+        }
+        const celulas = raw
+          .slice(1, -1) // remover | externo
+          .split('|')
+          .map((c) => c.trim());
+        tabelaLinhas.push(celulas);
+        i++;
+      }
+
+      if (tabelaLinhas.length > 0) {
+        const numCols = Math.max(...tabelaLinhas.map((r) => r.length));
+        const body = tabelaLinhas.map((row, rowIdx) => {
+          const cells = [];
+          for (let c = 0; c < numCols; c++) {
+            cells.push({
+              text: row[c] || '',
+              fontSize: 9,
+              bold: rowIdx === 0,
+              color: rowIdx === 0 ? '#2e8555' : '#333333',
+              margin: [4, 3, 4, 3],
+            });
+          }
+          return cells;
+        });
+
+        conteudo.push({
+          table: {
+            headerRows: 1,
+            widths: Array(numCols).fill('*'),
+            body,
+          },
+          layout: {
+            fillColor: (rowIndex: number) => (rowIndex === 0 ? '#f0f7f4' : null),
+            hLineWidth: () => 0.5,
+            vLineWidth: () => 0.3,
+            hLineColor: () => '#d0d7de',
+            vLineColor: () => '#d0d7de',
+          },
+          margin: [0, 4, 0, 6],
+        });
+        continue;
+      }
+    }
+
+    // Lista com - ou *
+    if (/^\s*[-*]\s+/.test(linhaSemR)) {
+      const itens: PdfContent[] = [];
+      while (i < linhas.length) {
+        const itemLinha = linhas[i].replace(/^R:\s*/, '');
+        if (!/^\s*[-*]\s+/.test(itemLinha)) break;
+        const textoItem = itemLinha.replace(/^\s*[-*]\s+/, '');
+        itens.push({ text: parseInline(textoItem), style: 'resposta' });
+        i++;
+      }
+      conteudo.push({
+        ul: itens,
+        margin: [0, 2, 0, 4],
+        style: 'resposta',
+      });
+      continue;
+    }
+
+    // Linha vazia
+    if (linhaSemR.trim() === '') {
+      i++;
+      continue;
+    }
+
+    // Parágrafo normal com formatação inline
+    conteudo.push({
+      text: parseInline(linhaSemR),
+      style: 'resposta',
+      margin: [0, 0, 0, 4],
+    });
+    i++;
+  }
+
+  return conteudo;
 }
 
 export async function gerarSimuladoPDF(
   perguntasSelecionadas: Question[],
 ): Promise<void> {
-  // Import dinâmico para não carregar o pdfmake no bundle inicial
   const pdfMake = await import('pdfmake/build/pdfmake');
   const pdfFonts = await import('pdfmake/build/vfs_fonts');
 
   pdfMake.default.vfs = pdfFonts.default.pdfMake?.vfs ?? pdfFonts.default.vfs;
+
+  // Registrar fonte Courier para blocos de código
+  pdfMake.default.fonts = {
+    Roboto: {
+      normal: 'Roboto-Regular.ttf',
+      bold: 'Roboto-Medium.ttf',
+      italics: 'Roboto-Italic.ttf',
+      bolditalics: 'Roboto-MediumItalic.ttf',
+    },
+    Courier: {
+      normal: 'Courier',
+      bold: 'Courier-Bold',
+      italics: 'Courier-Oblique',
+      bolditalics: 'Courier-BoldOblique',
+    },
+  };
 
   const dataAtual = new Date().toLocaleDateString('pt-BR', {
     day: '2-digit',
@@ -42,7 +226,6 @@ export async function gerarSimuladoPDF(
 
   const totalPerguntas = perguntasSelecionadas.length;
 
-  // Contar perguntas por categoria
   const contagemCategorias = new Map<string, number>();
   for (const p of perguntasSelecionadas) {
     contagemCategorias.set(p.category, (contagemCategorias.get(p.category) || 0) + 1);
@@ -53,7 +236,7 @@ export async function gerarSimuladoPDF(
     .join('  •  ');
 
   // --- Seção de perguntas ---
-  const secaoPerguntas: any[] = [
+  const secaoPerguntas: PdfContent[] = [
     {
       text: 'SIMULADO - ENTREVISTA JAVA',
       style: 'titulo',
@@ -99,7 +282,7 @@ export async function gerarSimuladoPDF(
   }
 
   // --- Seção de respostas (gabarito) ---
-  const secaoRespostas: any[] = [
+  const secaoRespostas: PdfContent[] = [
     { text: '', pageBreak: 'before' },
     {
       canvas: [{ type: 'line', x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 1, lineColor: '#2e8555' }],
@@ -114,9 +297,7 @@ export async function gerarSimuladoPDF(
 
   for (let i = 0; i < perguntasSelecionadas.length; i++) {
     const p = perguntasSelecionadas[i];
-    const resposta = p.hasAnswer
-      ? limparMarkdown(p.answer)
-      : 'Resposta ainda não disponível neste material.';
+    const respostaConteudo = markdownParaPdf(p.answer);
 
     secaoRespostas.push({
       stack: [
@@ -127,9 +308,12 @@ export async function gerarSimuladoPDF(
           ],
         },
         {
-          text: resposta,
-          style: 'resposta',
+          stack: respostaConteudo,
           margin: [25, 5, 0, 0],
+        },
+        {
+          canvas: [{ type: 'line', x1: 0, y1: 0, x2: 490, y2: 0, lineWidth: 0.3, lineColor: '#e0e0e0' }],
+          margin: [0, 8, 0, 0],
         },
       ],
       margin: [0, 0, 0, 15],
@@ -139,6 +323,9 @@ export async function gerarSimuladoPDF(
   const docDefinition: any = {
     pageSize: 'A4',
     pageMargins: [40, 40, 40, 40],
+    defaultStyle: {
+      font: 'Roboto',
+    },
     content: [...secaoPerguntas, ...secaoRespostas],
     styles: {
       titulo: {
