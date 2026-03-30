@@ -28,7 +28,6 @@ function parseInline(texto: string): PdfContent[] {
       // `code`
       resultado.push({
         text: match[4],
-        font: 'Courier',
         fontSize: 9,
         background: '#f0f0f0',
         color: '#c7254e',
@@ -81,7 +80,6 @@ function markdownParaPdf(markdown: string): PdfContent[] {
             widths: ['*'],
             body: [[{
               text: codeLines.join('\n'),
-              font: 'Courier',
               fontSize: 8.5,
               lineHeight: 1.3,
               color: '#1a1a2e',
@@ -202,19 +200,12 @@ export async function gerarSimuladoPDF(
 
   pdfMake.default.vfs = pdfFonts.default.pdfMake?.vfs ?? pdfFonts.default.vfs;
 
-  // Registrar fonte Courier para blocos de código
   pdfMake.default.fonts = {
     Roboto: {
       normal: 'Roboto-Regular.ttf',
       bold: 'Roboto-Medium.ttf',
       italics: 'Roboto-Italic.ttf',
       bolditalics: 'Roboto-MediumItalic.ttf',
-    },
-    Courier: {
-      normal: 'Courier',
-      bold: 'Courier-Bold',
-      italics: 'Courier-Oblique',
-      bolditalics: 'Courier-BoldOblique',
     },
   };
 
