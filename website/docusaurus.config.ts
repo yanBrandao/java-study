@@ -27,6 +27,10 @@ const config: Config = {
     locales: ['pt-BR'],
   },
 
+  plugins: [
+    './src/plugins/questions-plugin.ts',
+  ],
+
   presets: [
     [
       'classic',
@@ -59,6 +63,11 @@ const config: Config = {
           sidebarId: 'tutorialSidebar',
           position: 'left',
           label: 'Perguntas',
+        },
+        {
+          to: '/simulado',
+          label: 'Simulado',
+          position: 'left',
         },
         {
           href: 'https://github.com/yanBrandao/java-study',
