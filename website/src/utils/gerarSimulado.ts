@@ -194,6 +194,7 @@ function markdownParaPdf(markdown: string): PdfContent[] {
 
 export async function gerarSimuladoPDF(
   perguntasSelecionadas: Question[],
+  categoryIcons: Record<string, string> = {},
 ): Promise<void> {
   const pdfMake = await import('pdfmake/build/pdfmake');
   const pdfFonts = await import('pdfmake/build/vfs_fonts');
@@ -222,9 +223,20 @@ export async function gerarSimuladoPDF(
     contagemCategorias.set(p.category, (contagemCategorias.get(p.category) || 0) + 1);
   }
 
-  const resumoCategorias = Array.from(contagemCategorias.entries())
-    .map(([cat, qtd]) => `${cat}: ${qtd}`)
-    .join('  •  ');
+  // Montar resumo de categorias com ícones
+  const resumoItems: PdfContent[] = [];
+  const entradas = Array.from(contagemCategorias.entries());
+  for (let i = 0; i < entradas.length; i++) {
+    const [cat, qtd] = entradas[i];
+    const slug = perguntasSelecionadas.find((q) => q.category === cat)?.categorySlug;
+    if (i > 0) {
+      resumoItems.push({ text: '  •  ', style: 'categoriaResumo' });
+    }
+    if (slug && categoryIcons[slug]) {
+      resumoItems.push({ image: categoryIcons[slug], width: 10, height: 10, margin: [0, 1, 3, 0] });
+    }
+    resumoItems.push({ text: `${cat}: ${qtd}`, style: 'categoriaResumo' });
+  }
 
   // --- Seção de perguntas ---
   const secaoPerguntas: PdfContent[] = [
@@ -240,8 +252,7 @@ export async function gerarSimuladoPDF(
       margin: [0, 5, 0, 5],
     },
     {
-      text: resumoCategorias,
-      style: 'categoriaResumo',
+      columns: resumoItems,
       alignment: 'center',
       margin: [0, 0, 0, 20],
     },
@@ -258,13 +269,21 @@ export async function gerarSimuladoPDF(
 
   for (let i = 0; i < perguntasSelecionadas.length; i++) {
     const p = perguntasSelecionadas[i];
+    const icon = categoryIcons[p.categorySlug];
+
+    const categoriaInfo: PdfContent[] = [];
+    if (icon) {
+      categoriaInfo.push({ image: icon, width: 12, height: 12, margin: [0, 1, 4, 0] });
+    }
+    categoriaInfo.push({ text: `${p.category} — ${p.sourceTitle}`, style: 'categoriaPergunta' });
+
     secaoPerguntas.push({
       columns: [
         { text: `${i + 1}.`, width: 25, style: 'numeroPergunta' },
         {
           stack: [
             { text: p.question, style: 'pergunta' },
-            { text: `[${p.category} — ${p.sourceTitle}]`, style: 'categoriaPergunta' },
+            { columns: categoriaInfo, margin: [0, 2, 0, 0] },
           ],
         },
       ],
@@ -289,15 +308,19 @@ export async function gerarSimuladoPDF(
   for (let i = 0; i < perguntasSelecionadas.length; i++) {
     const p = perguntasSelecionadas[i];
     const respostaConteudo = markdownParaPdf(p.answer);
+    const icon = categoryIcons[p.categorySlug];
+
+    const headerGabarito: PdfContent[] = [
+      { text: `${i + 1}.`, width: 25, style: 'numeroPergunta' },
+    ];
+    if (icon) {
+      headerGabarito.push({ image: icon, width: 14, height: 14, margin: [0, 0, 6, 0] });
+    }
+    headerGabarito.push({ text: p.question, style: 'perguntaGabarito' });
 
     secaoRespostas.push({
       stack: [
-        {
-          columns: [
-            { text: `${i + 1}.`, width: 25, style: 'numeroPergunta' },
-            { text: p.question, style: 'perguntaGabarito' },
-          ],
-        },
+        { columns: headerGabarito },
         {
           stack: respostaConteudo,
           margin: [25, 5, 0, 0],

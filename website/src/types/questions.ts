@@ -14,4 +14,5 @@ export interface QuestionsData {
   categories: string[];
   totalQuestions: number;
   questions: Question[];
+  categoryIcons: Record<string, string>;
 }

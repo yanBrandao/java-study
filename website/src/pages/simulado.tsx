@@ -60,7 +60,7 @@ export default function SimuladoPage(): React.JSX.Element {
         quantidade,
         Array.from(categoriasAtivas),
       );
-      await gerarSimuladoPDF(selecionadas);
+      await gerarSimuladoPDF(selecionadas, data.categoryIcons);
     } finally {
       setGerando(false);
     }

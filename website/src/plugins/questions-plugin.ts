@@ -4,6 +4,7 @@ import * as path from 'path';
 import type { Question, QuestionsData } from '../types/questions';
 
 const ENTREVISTA_DIR = path.resolve(__dirname, '../../../entrevista-java');
+const ICONS_DIR = path.resolve(__dirname, '../../static/img/categorias');
 
 const CATEGORY_DIRS = [
   'java-core',
@@ -100,10 +101,21 @@ export default function questionsPlugin(_context: LoadContext): Plugin<Questions
         }
       }
 
+      // Ler ícones das categorias como base64
+      const categoryIcons: Record<string, string> = {};
+      for (const categoryDir of CATEGORY_DIRS) {
+        const iconPath = path.join(ICONS_DIR, `${categoryDir}.png`);
+        if (fs.existsSync(iconPath)) {
+          const buffer = fs.readFileSync(iconPath);
+          categoryIcons[categoryDir] = `data:image/png;base64,${buffer.toString('base64')}`;
+        }
+      }
+
       return {
         categories,
         totalQuestions: allQuestions.length,
         questions: allQuestions,
+        categoryIcons,
       };
     },
 
