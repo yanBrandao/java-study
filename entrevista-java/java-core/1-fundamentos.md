@@ -7,7 +7,7 @@ title: "Fundamentos da Linguagem Java"
 
 ### 1. Qual a diferença entre JDK, JRE e JVM?
 
-R: **JVM** (Java Virtual Machine): é a máquina virtual que executa o bytecode Java. É ela que garante o "write once, run anywhere", pois cada sistema operacional tem sua própria implementação de JVM.
+**JVM** (Java Virtual Machine): é a máquina virtual que executa o bytecode Java. É ela que garante o "write once, run anywhere", pois cada sistema operacional tem sua própria implementação de JVM.
 - **JRE** (Java Runtime Environment): contém a JVM + as bibliotecas padrão do Java (java.lang, java.util, etc.). É o suficiente para **executar** programas Java.
 - **JDK** (Java Development Kit): contém o JRE + ferramentas de desenvolvimento como o compilador (`javac`), debugger (`jdb`), e o empacotador (`jar`). É necessário para **desenvolver** programas Java.
 
@@ -15,7 +15,7 @@ Resumo: JDK > JRE > JVM (cada um contém o anterior).
 
 ### 2. O que é o bytecode Java e por que ele é importante?
 
-R: Bytecode é o **código intermediário** gerado pelo compilador `javac` quando compila um arquivo `.java` em um arquivo `.class`. Ele é importante porque:
+Bytecode é o **código intermediário** gerado pelo compilador `javac` quando compila um arquivo `.java` em um arquivo `.class`. Ele é importante porque:
 - A JVM interpreta o bytecode, não o código-fonte. Isso permite que o mesmo `.class` rode em qualquer sistema operacional que tenha uma JVM instalada (portabilidade).
 - O bytecode é otimizado em tempo de execução pelo **JIT (Just-In-Time Compiler)**, que converte partes frequentemente usadas em código de máquina nativo para melhor performance.
 
@@ -23,7 +23,7 @@ Fluxo: `Código.java` -> (javac) -> `Código.class` (bytecode) -> (JVM) -> Execu
 
 ### 3. Qual a diferença entre variáveis de tipo primitivo e tipo referência?
 
-R: **Primitivos** (`int`, `float`, `boolean`, etc.): armazenam o **valor diretamente** na memória stack. São mais leves e rápidos.
+**Primitivos** (`int`, `float`, `boolean`, etc.): armazenam o **valor diretamente** na memória stack. São mais leves e rápidos.
 - **Referência** (`String`, `Integer`, arrays, qualquer classe): armazenam um **ponteiro/referência** para um objeto que fica na memória heap. Todos herdam de `Object`.
 
 Exemplo prático:
@@ -34,7 +34,7 @@ String s = "hello";  // referência: s aponta para um objeto String na heap
 
 ### 4. Quais são os tipos primitivos do Java e seus tamanhos?
 
-R:  Java tem exatamente **8 tipos primitivos**:
+Java tem exatamente **8 tipos primitivos**:
 
 | Tipo      | Tamanho | Faixa de valores                        |
 |-----------|---------|------------------------------------------|
@@ -49,7 +49,6 @@ R:  Java tem exatamente **8 tipos primitivos**:
 
 ### 5. Qual a diferença entre `==` e `.equals()`?
 
-R: 
 - `==` compara **referências** (endereço de memória) para objetos, e **valores** para primitivos.
 - `.equals()` por padrão (na classe `Object`) faz a mesma coisa que `==`. Porém, classes como `String`, `Integer`, etc. **sobrescrevem** o método para comparar o **conteúdo/valor**.
 
@@ -63,7 +62,7 @@ Ponto importante: se você criar sua própria classe e quiser comparar por valor
 
 ### 6. O que é autoboxing e unboxing?
 
-R: Autoboxing e unboxing é a conversão automática que o Java faz entre tipos primitivos e suas classes wrapper correspondentes:
+Autoboxing e unboxing é a conversão automática que o Java faz entre tipos primitivos e suas classes wrapper correspondentes:
 - **Autoboxing**: primitivo -> wrapper (automático): `Integer x = 10;` (o `int` 10 vira um objeto `Integer`)
 - **Unboxing**: wrapper -> primitivo (automático): `int y = x;` (o objeto `Integer` vira `int`)
 
@@ -77,7 +76,7 @@ int y = x; // NullPointerException em tempo de execução!
 
 ### 7. Por que a classe `String` é imutável em Java?
 
-R:  `String` é imutável porque, uma vez criada, seu valor **não pode ser alterado**. Qualquer operação que "modifica" uma String na verdade cria uma **nova String** na memória. Isso foi feito por três razões:
+`String` é imutável porque, uma vez criada, seu valor **não pode ser alterado**. Qualquer operação que "modifica" uma String na verdade cria uma **nova String** na memória. Isso foi feito por três razões:
 - **Segurança**: Strings são usadas para senhas, URLs, nomes de classe. Se fossem mutáveis, alguém poderia alterar uma referência compartilhada e comprometer o sistema.
 - **Performance (String Pool)**: como são imutáveis, o Java pode reutilizar a mesma instância para Strings iguais, economizando memória.
 - **Thread-safety**: objetos imutáveis são naturalmente seguros para uso entre múltiplas threads sem sincronização.
@@ -90,7 +89,6 @@ System.out.println(s); // imprime "Java" (inalterado)
 
 ### 8. Qual a diferença entre `String`, `StringBuilder` e `StringBuffer`?
 
-R: 
 - **String**: imutável. Cada modificação cria um novo objeto. Ideal para textos que não mudam.
 - **StringBuilder**: mutável. Modifica o texto no mesmo objeto sem criar novos. **Não** é thread-safe. Ideal para concatenações em loops (melhor performance).
 - **StringBuffer**: idêntico ao StringBuilder, porém **thread-safe** (métodos sincronizados). Mais lento que StringBuilder por causa da sincronização.
@@ -110,7 +108,7 @@ Regra prática: use `String` para textos fixos, `StringBuilder` para concatenaç
 
 ### 9. O que é o pool de Strings (String Pool)?
 
-R: O String Pool é uma área especial da memória heap onde o Java armazena **literais de String** para reutilização. Quando você cria uma String com literal (aspas duplas), o Java primeiro verifica se já existe uma igual no pool:
+O String Pool é uma área especial da memória heap onde o Java armazena **literais de String** para reutilização. Quando você cria uma String com literal (aspas duplas), o Java primeiro verifica se já existe uma igual no pool:
 
 ```java
 String a = "Java";   // cria no pool
@@ -126,7 +124,6 @@ O método `intern()` pode forçar uma String para o pool: `c.intern() == a` seri
 
 ### 10. Qual a diferença entre `final`, `finally` e `finalize()`?
 
-R:
  - **`final`**: palavra-chave com três usos:
   - Em **variável**: o valor não pode ser reatribuído (constante).
   - Em **método**: o método não pode ser sobrescrito por subclasses.
@@ -136,7 +133,7 @@ R:
 
 ### 11. O que são modificadores de acesso e quais existem em Java?
 
-R:  Java possui exatamente **4 modificadores de acesso**:
+Java possui exatamente **4 modificadores de acesso**:
 
 | Modificador   | Classe | Pacote | Subclasse | Mundo |
 |---------------|--------|--------|-----------|-------|
@@ -149,7 +146,6 @@ R:  Java possui exatamente **4 modificadores de acesso**:
 
 ### 12. Qual a diferença entre `static` e `non-static`?
 
-R:
 - **`static`**: pertence à **classe**, não à instância. Existe uma única cópia compartilhada por todos os objetos. É acessado sem criar um objeto: `MinhaClasse.metodo()`.
 - **`non-static`** (instância): pertence a **cada objeto** criado. Cada instância tem sua própria cópia.
 
@@ -168,7 +164,7 @@ class Contador {
 
 ### 13. O que é o `ClassLoader` em Java?
 
-R:  O ClassLoader é o componente da JVM responsável por **carregar as classes em memória** em tempo de execução. Quando você usa uma classe no código, o ClassLoader:
+O ClassLoader é o componente da JVM responsável por **carregar as classes em memória** em tempo de execução. Quando você usa uma classe no código, o ClassLoader:
 1. Localiza o arquivo `.class` (no classpath, JARs, etc.)
 2. Lê o bytecode
 3. Cria o objeto `Class<?>` na memória
@@ -180,7 +176,6 @@ Existem 3 ClassLoaders principais, em hierarquia:
 
 ### 14. Como funciona o Garbage Collector no Java?
 
-R: 
 - O GC remove da memória **heap** qualquer objeto que **não possui mais referências** apontando para ele, independente de onde foi criado.
 - Funciona por gerações: **Young Generation** (objetos novos), **Old Generation** (objetos que sobreviveram várias coletas), e **Metaspace** (metadados de classes).
 - O GC roda automaticamente, mas você pode sugerir (não forçar) uma coleta com `System.gc()`.
@@ -196,7 +191,7 @@ void exemplo() {
 
 ### 15. O que é o operador `instanceof`?
 
-R: é uma palavra reservada que ser para identificar se aquela variavel pertence ao tipo de uma Classe
+`instanceof` é uma palavra reservada que ser para identificar se aquela variavel pertence ao tipo de uma Classe
 
 ```java
 Animal animal = new Cachorro();

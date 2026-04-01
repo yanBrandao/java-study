@@ -7,7 +7,6 @@ title: "Tratamento de Exceções"
 
 ### 1. Qual a diferença entre `checked` e `unchecked` exceptions?
 
-R: 
 - **Checked exceptions**: o compilador **obriga** você a tratar (com try/catch ou declarar com throws). São exceções previsíveis que podem ser recuperadas. Ex: `IOException`, `SQLException`, `FileNotFoundException`.
 - **Unchecked exceptions**: o compilador **não obriga** tratamento. São erros de programação/lógica. Herdam de `RuntimeException`. Ex: `NullPointerException`, `ArrayIndexOutOfBoundsException`, `IllegalArgumentException`.
 
@@ -22,7 +21,7 @@ s.length(); // compila, mas lança NullPointerException em execução
 
 ### 2. Qual a diferença entre `throw` e `throws`?
 
-R: São complementares:
+São complementares:
 - **`throw`**: usado para **lançar** uma exceção explicitamente no corpo do método.
 - **`throws`**: usado na **assinatura** do método para declarar quais checked exceptions ele pode lançar (delegando o tratamento para quem chamar).
 
@@ -38,7 +37,7 @@ public void lerArquivo(String path) throws IOException {
 
 ### 3. O que é e como funciona o bloco `try-with-resources`?
 
-R: O próprio `try-with-resources` chama automaticamente o método `close()` da interface `AutoCloseable` ao final do bloco, mesmo que ocorra exceção:
+O próprio `try-with-resources` chama automaticamente o método `close()` da interface `AutoCloseable` ao final do bloco, mesmo que ocorra exceção:
 
 ```java
 // Sem try-with-resources (verboso e propenso a erros):
@@ -60,7 +59,6 @@ O objeto precisa implementar `AutoCloseable` (ou `Closeable`).
 
 ### 4. É possível ter um bloco `try` sem `catch`? E sem `finally`?
 
-R: 
 - `try / catch`
 - `try / finally`
 - `try / catch / finally`
@@ -68,7 +66,6 @@ R:
 
 ### 5. Qual a diferença entre `Error` e `Exception`?
 
-R: 
 - **Error**: problemas graves da **JVM/ambiente** que a aplicação geralmente **não deve tentar tratar**. Ex: `OutOfMemoryError`, `StackOverflowError`, `NoClassDefFoundError`. Indicam que algo está fundamentalmente errado.
 - **Exception**: problemas da **aplicação** que **podem e devem** ser tratados pelo desenvolvedor. Ex: `IOException`, `NullPointerException`, `SQLException`.
 
@@ -83,7 +80,6 @@ Throwable
 
 ### 6. O que acontece se uma exceção for lançada dentro de um bloco `finally`?
 
-R: 
 **a exceção original do try/catch é perdida (suprimida)**:
 
 ```java
@@ -100,7 +96,6 @@ Por isso, evite lançar exceções no `finally`. Se precisar, use `try-with-reso
 
 ### 7. Quando criar uma exceção customizada?
 
-R: 
 - As exceções padrão do Java **não representam** adequadamente o erro do seu domínio. Ex: `SaldoInsuficienteException`, `PedidoNaoEncontradoException`.
 - Você quer que o **chamador trate erros específicos** de formas diferentes.
 - Para **padronizar mensagens** de erro na sua aplicação (muito usado em APIs REST).
@@ -116,7 +111,6 @@ public class SaldoInsuficienteException extends RuntimeException {
 
 ### 8. Qual a hierarquia de exceções em Java?
 
-R: 
 ```
 Object
 └── Throwable                          (raiz de tudo que pode ser lançado)

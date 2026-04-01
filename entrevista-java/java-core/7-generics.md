@@ -71,9 +71,7 @@ Consequência: você não pode fazer `new T()`, `instanceof List<String>` ou `ne
 
 ### 4. É possível criar um array de tipos genéricos? Por quê?
 
-R: Não sei
-
-**[Não respondida]** **Não**, Java não permite criar arrays de tipos genéricos diretamente:
+**Não**, Java não permite criar arrays de tipos genéricos diretamente:
 ```java
 List<String>[] array = new List<String>[10]; // ERRO DE COMPILAÇÃO!
 ```
