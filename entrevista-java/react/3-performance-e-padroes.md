@@ -299,3 +299,94 @@ function Componente({ promessa }) {
 **`ref` como prop**: não precisa mais de `forwardRef` — refs podem ser passadas diretamente como props em componentes de função.
 
 **Melhorias no Server Components**: integração mais profunda com frameworks como Next.js.
+
+### 11. Quais são os principais padrões de projeto (design patterns) no React?
+
+O React possui padrões próprios que evoluíram com o ecossistema. Os mais relevantes em entrevistas:
+
+**1. Container / Presentational (Smart × Dumb)**
+Separa lógica de negócio da apresentação. Hoje, normalmente substituído por custom hooks, mas ainda aparece em bases de código legadas.
+```jsx
+// Container: busca dados e possui lógica
+function ListaUsuariosContainer() {
+  const { data } = useQuery({ queryKey: ["usuarios"], queryFn: buscarUsuarios });
+  return <ListaUsuarios usuarios={data} />;
+}
+
+// Presentational: só renderiza o que recebe
+function ListaUsuarios({ usuarios }) {
+  return <ul>{usuarios.map(u => <li key={u.id}>{u.nome}</li>)}</ul>;
+}
+```
+
+**2. Higher-Order Component (HOC)**
+Função que recebe um componente e retorna um novo com comportamento adicional.
+```jsx
+function comAutenticacao(Componente) {
+  return function ComponenteProtegido(props) {
+    const { usuario } = useAuth();
+    if (!usuario) return <Redirect to="/login" />;
+    return <Componente {...props} />;
+  };
+}
+
+const DashboardProtegido = comAutenticacao(Dashboard);
+```
+Ainda útil para bibliotecas, mas custom hooks costumam ser mais simples para lógica.
+
+**3. Custom Hook (padrão mais importante atualmente)**
+Encapsula e reutiliza lógica stateful entre componentes.
+```jsx
+function useDebounce(valor, delay = 300) {
+  const [debouncado, setDebouncado] = useState(valor);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncado(valor), delay);
+    return () => clearTimeout(timer);
+  }, [valor, delay]);
+
+  return debouncado;
+}
+```
+
+**4. Provider Pattern**
+Distribui dados/funcionalidades via Context sem prop drilling.
+```jsx
+// Criação do contexto + provider
+const TemaContext = createContext();
+
+export function TemaProvider({ children }) {
+  const [tema, setTema] = useState("claro");
+  return (
+    <TemaContext.Provider value={{ tema, setTema }}>
+      {children}
+    </TemaContext.Provider>
+  );
+}
+
+// Hook de conveniência
+export function useTema() { return useContext(TemaContext); }
+```
+
+**5. Compound Components** — já detalhado na questão 4 desta seção.
+
+**6. Render Props** — já detalhado na questão 5 desta seção.
+
+**7. Atomic Design (arquitetura de componentes)**
+Organiza componentes em níveis de abstração:
+- **Atoms**: elementos básicos (`Button`, `Input`, `Badge`).
+- **Molecules**: grupos de atoms (`FormField = Label + Input + ErrorMessage`).
+- **Organisms**: seções completas (`Header`, `ProductCard`).
+- **Templates**: layouts sem dados reais.
+- **Pages**: templates com dados injetados.
+
+**Resumo: quando usar cada um**
+
+| Padrão | Caso de uso |
+|---|---|
+| Custom Hook | Reutilizar lógica stateful (padrão mais usado hoje) |
+| HOC | Injetar comportamento cross-cutting (auth, logging) |
+| Compound Components | APIs de componentes flexíveis e declarativas |
+| Render Props | Componentes que precisam ceder controle do DOM ao consumidor |
+| Provider Pattern | Estado global ou serviços compartilhados |
+| Atomic Design | Organização de Design Systems |
